@@ -176,9 +176,8 @@
   <img src="data:image/png;base64,{{ graph }}" alt="BTC 가격 그래프">
   <div>
     {% for new in news %}
-      <h5 style="color: black;">{{ new.title }}</h5>
+      <a href="{{ new.href }}" style="color: black;">{{ new.title }}</a>
       <p style="color: black;">{{ new.date }}</p>
-      <a href="{{ new.href }}">주소</a>
     {% endfor %}
   </div>
   <!-- do section -->
