@@ -2,6 +2,8 @@ from django.shortcuts import render
 from Test.models import News, Btc
 from Test.crawling import news_crawling, upbit
 import pyupbit
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import io
 import urllib, base64
