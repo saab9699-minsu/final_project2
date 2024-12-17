@@ -1,16 +1,4 @@
 from django.shortcuts import render
-<<<<<<< HEAD
-from Test.models import News, Btc
-from Test.crawling import news_crawling, upbit
-import pyupbit
-import mplfinance as mpf
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import io
-import urllib, base64
-from mpl_finance import candlestick2_ochl
-=======
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -23,7 +11,7 @@ from django.http import JsonResponse
 import plotly.io as pio
 
 pio.templates.default = "plotly_white"
-=========
+
 from Test.models import News, Btc
 from Test.crawling import news_crawling, upbit
 import pyupbit
@@ -34,7 +22,6 @@ import matplotlib.pyplot as plt
 import io
 import urllib, base64
 from mpl_finance import candlestick2_ochl
->>>>>>>>> Temporary merge branch 2
 
 
 # Create your views here.
