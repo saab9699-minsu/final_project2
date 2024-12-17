@@ -84,30 +84,68 @@
   <section class="work_section layout_padding">
     <div class="container">
       <div class="heading_container">
-        <h2>
-          CREATIVE WORKS
-        </h2>
-        <p>
-          consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation
-        </p>
+      <h2>Portfolio</h2>
+
+      <!-- 사용자 입력 폼 -->
+      <form id="finance-form" method="POST">
+        {% csrf_token %}
+        <div>
+          <label for="start">시작 날짜</label>
+          <input type="date" id="start" name="start" value="{{ default_start }}">
+          <label for="end">종료 날짜</label>
+          <input type="date" id="end" name="end" value="{{ default_end }}">
+        </div>  
+        
+        <div>
+          <label for="tick">주식 종목</label>
+          <input type="text" id="tick" name="ick" value="{{ default_tick }}">
+
+          <label for="btc">가상화폐 종목</label>
+          <input type="text" id="btc" name="btc" value="{{ default_btc }}">
+        </div>
+
+        <div>
+          <label for="btc">자산 비중</label>
+          <input type="text" id="gravity" name="gravity">
+
+          <label for="btc">초기 자금</label>
+          <input type="text" id="price" name="price">
+          
+        </div>
+        <button type="submit">확인</button>
+      </form>
+
+      <!-- 그래프 표시 -->
+      <div id="graph">
+          {{ graph|safe }}
       </div>
-      <div class="work_container layout_padding2">
-        <div class="box b-1">
-          <img src="/media/images/w-1.png" alt="">
-        </div>
-        <div class="box b-2">
-          <img src="/media/images/w-2.png" alt="">
 
-        </div>
-        <div class="box b-3">
-          <img src="/media/images/w-3.png" alt="">
+      <script>
+          // 폼 제출 이벤트 처리
+          $('#finance-form').on('submit', function(e) {
+              e.preventDefault(); // 기본 동작 중단
 
-        </div>
-        <div class="box b-4">
-          <img src="/media/images/w-4.png" alt="">
+              // 폼 데이터 가져오기
+              const start = $('#start').val();
+              const end = $('#end').val();
+              const tick = $('#tick').val();
+              const btc = $('#btc').val();
 
-        </div>
+              // AJAX 요청
+              $.ajax({
+                  url: "",
+                  method: "GET",
+                  data: { start, end, tick: tick.split(','), btc: btc.split(',') },
+                  headers: { "x-requested-with": "XMLHttpRequest" },
+                  success: function(response) {
+                    $('#graph').html(response.graph_html); // HTML로 그래프 업데이트
+                  },
+                  error: function(error) {
+                      alert("Error updating graph: " + error.responseText);
+                  }
+              });
+          });
+      </script>
       </div>
     </div>
   </section>
