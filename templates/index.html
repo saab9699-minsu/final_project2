@@ -173,6 +173,13 @@
     <!-- end slider section -->
   </div>
 
+  <img src="data:image/png;base64,{{ graph }}" alt="BTC 가격 그래프">
+  <div>
+    {% for new in news %}
+      <a href="{{ new.href }}" style="color: black;">{{ new.title }}</a>
+      <p style="color: black;">{{ new.date }}</p>
+    {% endfor %}
+  </div>
   <!-- do section -->
 
   <section class="do_section layout_padding">
