@@ -27,6 +27,27 @@
   <link href="/static/css/style.css" rel="stylesheet" />
   <!-- responsive style -->
   <link href="/static/css/responsive.css" rel="stylesheet" />
+  
+  <!-- 폰트 적용 추가 -->
+  <style>
+    @font-face {
+        font-family: 'S-CoreDream-3Light';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+    body {
+        font-family: 'S-CoreDream-3Light';
+    }
+    </style>
+    
+<!-- 토글 버튼 추가 -->
+    <script>
+        function toggleVisibility(id) {
+            const element = document.getElementById(id);
+            element.style.display = element.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
 </head>
 
 <body class="sub_page">
@@ -84,44 +105,187 @@
   <section class="contact_section layout_padding">
     <div class="container">
 
-      <div class="heading_container">
-        <h2>
-          반감기 패턴
-        </h2>
-      </div>
-      <div class="">
-        <div class="">
-          <div class="row">
-            <div class="col-md-9 mx-auto">
-              <div class="contact-form">
-                <form action="">
-                  <div>
-                    <input type="text" placeholder="Full Name ">
-                  </div>
-                  <div>
-                    <input type="text" placeholder="Phone Number">
-                  </div>
-                  <div>
-                    <input type="email" placeholder="Email Address">
-                  </div>
-                  <div>
-                    <input type="text" placeholder="Message" class="input_message">
-                  </div>
-                  <div class="d-flex justify-content-center">
-                    <button type="submit" class="btn_on-hover">
-                      Send
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+        <div class="heading_container">
+            <h2>
+            반감기란?
+            </h2>
         </div>
+        
+        <section calss="who_section layout_padding">
+            <div class="container">
+                <div class="detail-box">
+                    
+                    <h4>반감기란</h4>
+                    <p>비트코인 반감기는 4년에 한번 생기는 큰 이벤트입니다. 반감기가 오면, 비트코인 채굴자들이 블록 하나를 완성하고 받는 보상이 딱 절반으로 줄어들어요. 예를 들면, 원래 6.25개를 받았다면 반감기 후엔 3.125개로 줄어드는 거죠. "열심히 일했는데, 왜 보상이 줄어들지?"라고 생각할 수 있지만, 이게 바로 비트코인의 특별한 전략입니다.</p>
+                
+                    <h4>왜 중요할까요?</h4>
+                    <p>비트코인의 총 발행량은 2,100만 개로 딱 정해져 있어요. 그래서 반감기마다 공급 속도를 줄여 희소성을 높입니다. 마치 금광에서 금이 점점 적게 나오는 것처럼 말이죠. “더 귀해진다? 그럼 더 가치가 올라가겠네!”라는 심리 때문에 시장이 들썩이게 됩니다.</p>
+                
+                    <h4>NFT랑 메타버스는 왜 나와?</h4>
+                    <p>비트코인은 암호화폐 시장의 <strong>대장</strong>이기 때문에 비트코인이 움직이면 나머지도 영향을 받습니다. 마치 왕이 명령하면 나라 전체가 움직이는 것처럼요. 반감기 이후 비트코인에 대한 기대감이 높아지면, 암호화폐 시장 전체에 긍정적인 분위기가 퍼집니다. 그 여파로 <strong>NFT</strong>나 <strong>메타버스</strong> 같은 신흥 분야에도 투자자들이 관심을 가지게 됩니다. "비트코인 좋다는데, 다른 것도 좀 볼까?" 이런 식으로요.</p>
+                
+                    <h4>요약하자면</h4>
+                    <ul>
+                        <li><strong>반감기</strong>는 4년에 한 번, 비트코인의 채굴 보상이 반으로 줄어드는 이벤트입니다.</li>
+                        <li>이로 인해 <strong>비트코인 희소성</strong>이 높아지고, 투자 심리가 자극되며 가격이 움직이곤 합니다.</li>
+                        <li>비트코인의 긍정적인 움직임은 <strong>NFT</strong>와 <strong>메타버스</strong> 같은 다른 분야에도 좋은 영향을 줄 수 있습니다.</li>
+                    </ul>
+                
+                    <h4>결론?</h4>
+                    <p>반감기는 단순히 보상이 줄어드는 이벤트가 아니라 시장 전체를 흔들어놓는 큰 파도입니다. 비트코인이 반감기를 맞이하면 모두가 주목하고, 그 여파로 다양한 분야까지 활기를 띠게 되죠. 이것이 바로 비트코인 반감기에 주목해야 할 이유입니다!</p>
+                </div>
+            </div>
+        </section>
+<hr>
+        <div class="heading_container">
+            <h2>
+            반감기 패턴 
+            </h2>
+        </div>
+    <div class="hero_area">
+    <!-- 반감기 종가 그래프로 활용 -->
+    <!-- slider section -->
+        <section class=" slider_section position-relative">
+            <div class="container">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="detail-box">
+                                        <div>
+                                            <h2> 2010~2012 </h2>
+                                            <h2> 1차 반감기 이전 </h2>                                        
+                                            <img src="/media/images/halving_patterns/0_halving.png" alt="0차 반감기 " width="800">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col">
+                                <div class="detail-box">
+                                    <div>
+                                        <h2> 2012~2016 </h2>
+                                        <h2> 1차 반감기 </h2>                                    
+                                        <img src="/media/images/halving_patterns/1_halving.png" alt="1차 반감기 " width="800">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col">
+                                <div class="detail-box">
+                                    <div>
+                                        <h2> 2016~2020 </h2>
+                                        <h2> 2차 반감기 </h2>                                    
+                                        <img src="/media/images/halving_patterns/2_halving.png" alt="2차 반감기 " width="800">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col">
+                                <div class="detail-box">
+                                    <div>
+                                        <h2> 2020~2024 </h2>
+                                        <h2> 3차 반감기 </h2>                                    
+                                        <img src="/media/images/halving_patterns/3_halving.png" alt="3차 반감기 " width="800">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+            <div>
+                <p>비트코인의 반감기별 종가 그래프입니다.</p>
+                <p>단가는 다르지만 비슷한 모양을 하고 있다는 느낌이 들지 않으시나요?</p>
+                <p>패턴의 유사성이 실제로 있는지 확인하기 위해 log 수익률로 시각화, DTW로 반감기별 유사도 거리를 측정했습니다</p>
+            </div>
+        </section>
+    <!-- end slider section -->
     </div>
-  </section>
+
 
 
   <!-- end contact section -->
+<hr>
+    <div class="heading_container">
+        <h2>
+            로그 누적 수익률로 본 패턴 
+        </h2>
+    </div>
+
+    <section calss="who_section layout_padding">
+        <div class="container">
+            <!-- 토글 버튼 -->
+            <button onclick="toggleVisibility('compoundInterest')">복리 수익률이란?</button>
+            <!-- 토글버튼 클릭시 나오는 내용 -->
+            <div id="compoundInterest" style="display: none;">
+                <h3><strong>로그 수익률을 쓰는 이유 </strong></h3>
+                <h4><br>단가 차이가 있어도 사용하기 유용 </h4>
+                <p><br><strong>로그 수익률은 금융데이터에서 많이 사용되는 지표입니다. 가격이 달라도 비교가 쉽습니다</strong></p>
+                <p>예를 들어 A주식의 가격이 1,000원이고 B주식이 1,000,000원이라고 해봅시다.</p>
+            
+                <ul>
+                    <li>두 주식이 모두 10% 올랐다면, A는 100원 올랐고, B는 100,000원이 올랐습니다.</li>
+                    <li>이렇게 단순 수익률은 가격이 클수록 차이가 크게 보이지만, <strong>로그 수익률</strong>은 비율만 따지기 때문에 자산 가격 크기와 상관없이 <strong>공정하게 비교</strong>할 수 있죠.</li>
+                    <li>같은 기준으로 평가하니 불평등한 경쟁도 없습니다!</li>
+                </ul>
+
+                <h4><br><br>복리수익률이 반영되는 로그수익률</h4>
+
+                <h5><br>복리 수익률이란?</h5>
+                <p>복리는 수익이 발생하면 그 수익도 다시 원금에 더해져 다음 수익을 만드는 방식입니다.</p>
+            
+                <div>
+                    <strong>예를 들어:</strong>
+                    <ul>
+                        <li>100만 원 투자 후 첫 해 10% 수익 → 110만 원</li>
+                        <li>둘째 해 10% 수익 → 121만 원 (원금 110만 원에 다시 10%)</li>
+                    </ul>
+                    복리는 <strong>"앞선 수익을 바탕으로 더 큰 수익을 만드는 방식"</strong>입니다.
+                </div>
+            
+                <h5><br>로그 수익률이 복리 수익률을 반영하는 이유</h5>
+                <p>
+                    <strong>로그 수익률은 복리 효과를 자동으로 반영합니다.</strong>
+                </p>
+            
+                <div>
+                    <strong>예를 들어:</strong>
+                    <ul>
+                        <li>단순 수익률: <span>1.1 × 1.1 = 1.21</span></li>
+                        <li>로그 수익률: <span>r<sub>총합</sub> = r<sub>1</sub> + r<sub>2</sub> = 0.1 + 0.1 = 0.2</span></li>
+                    </ul>
+                    로그 수익률은 기간별 수익률을 더하기만 해도 복리 효과를 반영할 수 있습니다.
+                </div>
+            
+                <p>
+                    <strong>즉, 로그 수익률을 사용하면 복잡한 계산 없이도 복리 수익률을 쉽게 계산할 수 있습니다.</strong>
+                </p>
+                <p> 결론적으로, 반감기마다 종가의 단위가 크게 달라지는 점을 보완하고 복리수익률을 반영하기 위해 반감기 수익률 비교에 사용했습니다</p>
+
+            </div>
+        </div>
+    </section>
+</section>
 
 
   <!-- info section -->
