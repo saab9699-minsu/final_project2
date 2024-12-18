@@ -162,7 +162,7 @@
                                         <div>
                                             <h2> 2010~2012 </h2>
                                             <h2> 1차 반감기 이전 </h2>                                        
-                                            <img src="/media/images/halving_patterns/0_halving.png" alt="0차 반감기 " width="800">
+                                            <img src="/media/images/halving_patterns/0_halving.png" alt="0차 반감기 " width="800" height="250">
                                             
                                         </div>
                                     </div>
@@ -176,7 +176,7 @@
                                     <div>
                                         <h2> 2012~2016 </h2>
                                         <h2> 1차 반감기 </h2>                                    
-                                        <img src="/media/images/halving_patterns/1_halving.png" alt="1차 반감기 " width="800">
+                                        <img src="/media/images/halving_patterns/1_halving.png" alt="1차 반감기 " width="800" height="250">
                                         
                                     </div>
                                 </div>
@@ -190,7 +190,7 @@
                                     <div>
                                         <h2> 2016~2020 </h2>
                                         <h2> 2차 반감기 </h2>                                    
-                                        <img src="/media/images/halving_patterns/2_halving.png" alt="2차 반감기 " width="800">
+                                        <img src="/media/images/halving_patterns/2_halving.png" alt="2차 반감기 " width="800" height="250">
                                         
                                     </div>
                                 </div>
@@ -204,7 +204,7 @@
                                     <div>
                                         <h2> 2020~2024 </h2>
                                         <h2> 3차 반감기 </h2>                                    
-                                        <img src="/media/images/halving_patterns/3_halving.png" alt="3차 반감기 " width="800">
+                                        <img src="/media/images/halving_patterns/3_halving.png" alt="3차 반감기 " width="800" height="250">
                                         
                                     </div>
                                 </div>
@@ -226,7 +226,7 @@
 
   <!-- end contact section -->
 <hr>
-    <div class="heading_container">
+    <div class="heading_container" >
         <h2>
             로그 누적 수익률로 본 패턴 
         </h2>
@@ -235,67 +235,32 @@
     <section calss="who_section layout_padding">
       <div>
         <h3> 2010~2024 </h3>
-        <h3> 반감기 별 Log 수익률 </h3>                                    
-          <img src="/media/images/halving_patterns/halving_all_log.png" alt="반감기 별 그래프(로그수익률) " width="800">       
-        <p>반감기 별로 그려본 log 누적 수익률 그래프입니다.</p>
+        <h3><strong> 반감기 별 수익률 </strong></h3>
+          <img src="/media/images/halving_patterns/halving_all_log.png" alt="반감기 별 그래프(수익률) " width="800" >       
+        <p>반감기 별로 그려본 누적 수익률 그래프입니다.</p>
           <ul>
-            <li> 1차~3차 반감기의 log수익률을 보면, 상승하는 지점과 하락하는 지점의 시기가 비슷합니다.</li>
+            <li> 1차~3차 반감기의 수익률을 보면, 상승하는 지점과 하락하는 지점의 시기가 비슷합니다.</li>
             <li> 반감기가 진행 될수록 (0차 → 4차) 누적수익률은 낮아지는 것을 확인할 수 있습니다.</li>
             <li> 이는 반감기마다 채굴량이 줄어 그만큼 수익률이 낮아지는 것으로 보입니다</li>
-          </ul>
-        
-      </div>  
-        <div class="container">
+          </ul>        
+      </div> 
+      
+      <div>
+        <h3><br><strong> 반감기 패턴 확인 </strong></h3>
+        <p>그래프로 보면 비슷해보이는데, 실제로 반감기 패턴이 있을까요? </p>
+        <p>정해진 기간별로 어떠한 패턴을 보이는 것을 '계절성'이라고 하는데요, 반감기 별로 계절성이 있는지 알아보았습니다. </p>
+        <img src="/media/images/halving_patterns/halving_seasonal_decomposition.png" alt="" width="600" >       
+      </div>
+
+
+
+        <!-- <div class="container" style="padding-left: 50px;"> -->
             <!-- 토글 버튼 -->
-            <button onclick="toggleVisibility('compoundInterest')">복리 수익률이란?</button>
+            <!-- <button onclick="toggleVisibility('compoundInterest')">복리 수익률이란?</button> -->
             <!-- 토글버튼 클릭시 나오는 내용 -->
-            <div id="compoundInterest" style="display: none;">
-                <p><strong>로그 수익률을 쓰는 이유 </strong></p>
-                <p>단가 차이가 있어도 사용하기 유용 </p>
-                <p><strong>로그 수익률은 금융데이터에서 많이 사용되는 지표입니다. 가격이 달라도 비교가 쉽습니다</strong></p>
-                <p>예를 들어 A주식의 가격이 1,000원이고 B주식이 1,000,000원이라고 해봅시다.</p>
-            
-                <ul>
-                    <li>두 주식이 모두 10% 올랐다면, A는 100원 올랐고, B는 100,000원이 올랐습니다.</li>
-                    <li>이렇게 단순 수익률은 가격이 클수록 차이가 크게 보이지만, <strong>로그 수익률</strong>은 비율만 따지기 때문에 자산 가격 크기와 상관없이 <strong>공정하게 비교</strong>할 수 있죠.</li>
-                    <li>같은 기준으로 평가하니 불평등한 경쟁도 없습니다!</li>
-                </ul>
-
-                <p><strong><br>복리수익률이 반영되는 로그수익률</strong></p>
-
-                <p>복리 수익률이란?</p>
-                <p>복리는 수익이 발생하면 그 수익도 다시 원금에 더해져 다음 수익을 만드는 방식입니다.</p>
-            
-                <div>
-                    <strong>예를 들어:</strong>
-                    <ul>
-                        <li>100만 원 투자 후 첫 해 10% 수익 → 110만 원</li>
-                        <li>둘째 해 10% 수익 → 121만 원 (원금 110만 원에 다시 10%)</li>
-                    </ul>
-                    복리는 <strong>"앞선 수익을 바탕으로 더 큰 수익을 만드는 방식"</strong>입니다.
-                </div>
-            
-                <p><br>로그 수익률이 복리 수익률을 반영하는 이유</p>
-                <p>
-                    <strong>로그 수익률은 복리 효과를 자동으로 반영합니다.</strong>
-                </p>
-            
-                <div>
-                    <strong>예를 들어:</strong>
-                    <ul>
-                        <li>단순 수익률: <span>1.1 × 1.1 = 1.21</span></li>
-                        <li>로그 수익률: <span>r<sub>총합</sub> = r<sub>1</sub> + r<sub>2</sub> = 0.1 + 0.1 = 0.2</span></li>
-                    </ul>
-                    로그 수익률은 기간별 수익률을 더하기만 해도 복리 효과를 반영할 수 있습니다.
-                </div>
-            
-                <p>
-                    <strong>즉, 로그 수익률을 사용하면 복잡한 계산 없이도 복리 수익률을 쉽게 계산할 수 있습니다.</strong>
-                </p>
-                <p> 결론적으로, 반감기마다 종가의 단위가 크게 달라지는 점을 보완하고 복리수익률을 반영하기 위해 반감기 수익률 비교에 사용했습니다</p>
-
-            </div>
-        </div>
+            <!-- <div id="compoundInterest" style="display: none;"> -->
+            <!-- <p><strong>로그 수익률을 쓰는 이유 </strong></p> </div>-->          
+        <!-- </div> -->
       <!-- 토글 종료 -->       
     </section>
 </section>
@@ -319,7 +284,7 @@
           </div>
       </section>
 <hr>
-
+</div>
   <!-- info section -->
   <section class="info_section ">
     <div class="container">
