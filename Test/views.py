@@ -38,6 +38,11 @@ def contact(request):
 def do(request):
     return render(request, "do.html")
 
+# 디테일 페이지 
+# 반감기 패턴 페이지 
+def halving_pattern(request):
+    return render(request, "detail_halving_pattern.html")
+
 
 def index(request):
     news = News.objects.all()
