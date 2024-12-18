@@ -11,13 +11,13 @@ from django.http import JsonResponse
 import plotly.io as pio
 
 pio.templates.default = "plotly_white"
+
 from Test.models import News, Btc
 from Test.crawling import news_crawling, upbit
 import pyupbit
 import mplfinance as mpf
 import matplotlib
-
-matplotlib.use("Agg")
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import io
 import urllib, base64
