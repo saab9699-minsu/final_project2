@@ -10,5 +10,6 @@ urlpatterns = [
     path("index/", views.index, name="index"),
     path("", views.index, name="home"), 
     path("portfolio/", views.portfolio, name="portfolio"),
-    # path("portfolio/", views.portfolio, name="portfolio"),
+
+    path("detail_halving_pattern/", views.halving_pattern, name="halving_pattern"),
 ]
