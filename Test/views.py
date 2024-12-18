@@ -13,7 +13,7 @@ import plotly.io as pio
 pio.templates.default = "plotly_white"
 
 from Test.models import News, Btc
-from Test.crawling import news_crawling, upbit
+from Test.crawling import news_crawling, upbit, upbit2
 import pyupbit
 import mplfinance as mpf
 import matplotlib
@@ -62,32 +62,49 @@ def index(request):
             href=df.iloc[i]["href"],
         )
 
-    # 🔥 BTC 데이터 가져오기
     btc_df = pyupbit.get_ohlcv("KRW-BTC", interval="minute5", count=24 * 12)
-
-    # 🔥 데이터 전처리
     btc_df.index.name = "Date"  # X축에 날짜 표시를 위해 인덱스명 추가
 
     # 🔥 이동평균선 (MA) 추가
     mav = (5, 20)  # 5분, 20분 이동평균선 추가
 
-    # 🔥 마지막 값 강조
-    last_price = btc_df["close"][-1]
-    addplot = mpf.make_addplot(btc_df["close"], color="blue")
+    # 🔥 최신 가격 정보
+    last_price = btc_df["close"][-1]  # 최신 가격
+
+    # 🔥 최신 가격 라인 추가
+    latest_price_line = [last_price] * len(btc_df)  # 모든 행에 동일한 최신 가격 추가
+    addplot = [
+        mpf.make_addplot(latest_price_line, color="red", linestyle="dashed"),  # 수평선
+        mpf.make_addplot(btc_df["close"], color="blue")  # 기존의 클로즈 라인
+    ]
 
     # 🔥 차트 그리기
     fig, ax = mpf.plot(
         btc_df,
         type="candle",  # 캔들차트
-        style="charles",  # 차트 스타일 (charles: 깔끔한 스타일)
-        title="BTC/KRW Candlestick Chart (5-minute interval)",  # 제목
-        ylabel="Price (KRW)",  # Y축 라벨
-        xlabel="Time",  # X축 라벨
+        style="charles",  # 차트 스타일
         mav=mav,  # 이동평균선
         volume=True,  # 거래량 표시
-        addplot=addplot,  # 추가 라인
+        addplot=addplot,  # 추가 라인 (수평선과 기존의 클로즈 라인)
         returnfig=True,  # fig 객체 반환
+        figratio=(27, 9),  # 차트 비율 조절
     )
+
+    # 🔥 최신 가격 텍스트 추가
+    ax[0].text(
+        x=len(btc_df) - 1,  # x축의 위치 (마지막 데이터 위치)
+        y=last_price,  # y축의 위치 (최신 가격)
+        s=f'{last_price:,.0f} KRW',  # 표시할 텍스트 (천 단위 쉼표 추가)
+        color="red",  # 텍스트 색상
+        fontsize=12,  # 텍스트 크기
+        fontweight="bold",  # 텍스트 굵기
+        verticalalignment='bottom',  # 텍스트의 세로 정렬
+        horizontalalignment='left'  # 텍스트의 가로 정렬
+    )
+
+    # 🔥 X축 눈금 라벨 회전 제거
+    for label in ax[0].get_xticklabels():
+        label.set_rotation(0)
 
     # 🔥 이미지로 변환
     buffer = io.BytesIO()
@@ -97,10 +114,12 @@ def index(request):
     buffer.close()
     graph = base64.b64encode(image_png).decode("utf-8")  # base64로 인코딩
 
+    coins = upbit2()
     context = {
         "news": news,
         "graph": graph,  # 그래프를 context에 추가
         "last_price": last_price,  # 마지막 가격을 추가
+        "coins" : coins,
     }
     return render(request, "index.html", context)
 
