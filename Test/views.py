@@ -17,13 +17,15 @@ from Test.crawling import news_crawling, upbit, upbit2
 import pyupbit
 import mplfinance as mpf
 import matplotlib
-matplotlib.use('Agg')
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import io
 import urllib, base64
 from mpl_finance import candlestick2_ochl
 
 # 포트폴리오
+# 포트포리오
 from pypfopt import risk_models
 from pypfopt import expected_returns
 from pypfopt.efficient_frontier import EfficientFrontier
@@ -44,8 +46,9 @@ def contact(request):
 def do(request):
     return render(request, "do.html")
 
-# 디테일 페이지 
-# 반감기 패턴 페이지 
+
+# 디테일 페이지
+# 반감기 패턴 페이지
 def halving_pattern(request):
     return render(request, "detail_halving_pattern.html")
 
@@ -75,7 +78,7 @@ def index(request):
     latest_price_line = [last_price] * len(btc_df)  # 모든 행에 동일한 최신 가격 추가
     addplot = [
         mpf.make_addplot(latest_price_line, color="red", linestyle="dashed"),  # 수평선
-        mpf.make_addplot(btc_df["close"], color="blue")  # 기존의 클로즈 라인
+        mpf.make_addplot(btc_df["close"], color="blue"),  # 기존의 클로즈 라인
     ]
 
     # 🔥 차트 그리기
@@ -94,12 +97,12 @@ def index(request):
     ax[0].text(
         x=len(btc_df) - 1,  # x축의 위치 (마지막 데이터 위치)
         y=last_price,  # y축의 위치 (최신 가격)
-        s=f'{last_price:,.0f} KRW',  # 표시할 텍스트 (천 단위 쉼표 추가)
+        s=f"{last_price:,.0f} KRW",  # 표시할 텍스트 (천 단위 쉼표 추가)
         color="red",  # 텍스트 색상
         fontsize=12,  # 텍스트 크기
         fontweight="bold",  # 텍스트 굵기
-        verticalalignment='bottom',  # 텍스트의 세로 정렬
-        horizontalalignment='left'  # 텍스트의 가로 정렬
+        verticalalignment="bottom",  # 텍스트의 세로 정렬
+        horizontalalignment="left",  # 텍스트의 가로 정렬
     )
 
     # 🔥 X축 눈금 라벨 회전 제거
@@ -119,7 +122,7 @@ def index(request):
         "news": news,
         "graph": graph,  # 그래프를 context에 추가
         "last_price": last_price,  # 마지막 가격을 추가
-        "coins" : coins,
+        "coins": coins,
     }
     return render(request, "index.html", context)
 
@@ -131,15 +134,22 @@ def portfolio(request):
     default_end = date.today().isoformat()
     default_tick = ["SPY", "GLD", "TLT"]  # 기본 종목
     default_btc = ["BTC-USD"]  # 기본 BTC 심볼
+    default_price = 1000
+    default_weight = [0.25, 0.25, 0.25, 0.25]
 
     # GET/POST 요청에서 값 가져오기
     start = request.POST.get("start", default_start)
     end = request.POST.get("end", default_end)
-    price = request.POST.get("price", 0)
+    price = request.POST.get("price", default_price)
+    try:
+        price = int(price)  # 문자열을 정수로 변환 시도
+    except (ValueError, TypeError):
+        # 빈 문자열 또는 변환 불가한 값일 경우 기본값 사용
+        price = default_price
 
     # 쉼표로 구분된 입력값 처리하기
     tick_raw = request.POST.get("tick", ",".join(default_tick))
-    btc_raw = request.POST.get("tick", ",".join(default_btc))
+    btc_raw = request.POST.get("btc", ",".join(default_btc))
 
     # 리스트로 변환
     tick = [t.strip() for t in tick_raw.split(",")] if tick_raw else default_tick
@@ -150,7 +160,7 @@ def portfolio(request):
     weight = (
         [float(w.strip()) for w in weight_raw.split(",")]
         if weight_raw
-        else [0.25, 0.25, 0.25, 0.25]
+        else default_weight
     )
 
     # 가공된 데이터 구조 생성
@@ -211,15 +221,11 @@ def portfolio(request):
     user_ef.set_weights(user_weight)
     user_port = user_ef.portfolio_performance(verbose=False)
 
-    # 누적 수익률
     # 일간 수익률
     returns = merged_data.pct_change().dropna()
+    # 누적 수익률
     portfolio_returns = (returns * weights).sum(axis=1)
     cumulative_returns = (1 + portfolio_returns).cumprod()
-    # MDD
-    cumulative_max = cumulative_returns.cummax()
-    drawdown = cumulative_returns / cumulative_max - 1
-    max_drawdown = drawdown.min()
 
     # 비율에 따라 각 종목에 할당
     last_price = get_latest_prices(merged_data)
@@ -245,32 +251,45 @@ def portfolio(request):
     # 예상 수익률과 일일 자산 수익률의 연간 공분산 행렬을 계산
     mu = expected_returns.mean_historical_return(merged_data)
     S = risk_models.sample_cov(merged_data)
-    # 최대 샤프 비율을 최적화
+    # 최대 샤프 비율 최적화
     ef = EfficientFrontier(mu, S)
-    weigths_sh = ef.max_sharpe()
+
+    # 최소 및 최대 비중 설정
+    ef.add_constraint(lambda w: w >= 0.05)  # 최소 비중 5%
+    ef.add_constraint(lambda w: w <= 0.7)  # 최대 비중 70%
+
+    # 특정 자산 비중 설정 (예: TLT 최소 10%)
+    ef.add_constraint(lambda w: w[merged_data.columns.get_loc("TLT")] >= 0.1)
+
+    # 최적화 및 정리
+    weights_sh = ef.max_sharpe()
     cleaned_weights = ef.clean_weights()
-    weigths_sh = cleaned_weights
-    clean_weights = np.array([round(weigths_sh[key], 2) for key in merged_data.columns])
+
+    weights_sh = cleaned_weights  # 최적화된 가중치를 저장
+    clean_weights = np.array([round(weights_sh[key], 2) for key in merged_data.columns])
     # 분산계산
     clean_weights = np.array(clean_weights)
 
-    # 누적 수익률
     # 일간 수익률
     clean_returns = merged_data.pct_change().dropna()
+    # 누적 수익률
     clean_portfolio_returns = (clean_returns * clean_weights).sum(axis=1)
     clean_cumulative_returns = (1 + clean_portfolio_returns).cumprod()
+
     # MDD
-    clean_cumulative_max = clean_cumulative_returns.cummax()
-    clean_drawdown = clean_cumulative_returns / clean_cumulative_max - 1
-    clean_max_drawdown = clean_drawdown.min()
+    cumulative_max = merged_data.cummax()
+    drawdown = (merged_data / cumulative_max) - 1
+    dd = drawdown.cummin()
+    mdd = -dd.min()
+    mdd_mean = round(mdd.mean(), 2) * 100
 
     # 포트폴리오 종목 할당 계산
     last_price = get_latest_prices(merged_data)
-    weights = weigths_sh
+
     allocation = {}
     leftover = change_price
     # 비율에 따라 각 종목에 할당
-    for key, value in weigths_sh.items():
+    for key, value in weights_sh.items():
         if key in btc:
             # 암호화폐는 소수점 이하 단위까지 계산
             btc_buy = (change_price * value) / last_price[key]
@@ -287,12 +306,12 @@ def portfolio(request):
     port = ef.portfolio_performance(verbose=False)
 
     ### 시각화 ###
-    # plotly 그래프 생성성
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    # line_grahp 생성
+    line_fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     for column in merged_data.columns:
         if column in btc:  # BTC 종목은 왼쪽 y축
-            fig.add_trace(
+            line_fig.add_trace(
                 go.Scatter(
                     x=merged_data.index.tolist(),
                     y=merged_data[column].tolist(),
@@ -302,7 +321,7 @@ def portfolio(request):
                 secondary_y=False,
             )
         else:  # 일반 종목은 오른쪽 y축
-            fig.add_trace(
+            line_fig.add_trace(
                 go.Scatter(
                     x=merged_data.index.tolist(),
                     y=merged_data[column].tolist(),
@@ -313,7 +332,7 @@ def portfolio(request):
             )
 
     # 레이아웃 업데이트
-    fig.update_layout(
+    line_fig.update_layout(
         width=800,
         height=500,
         xaxis_title="Date",
@@ -321,12 +340,58 @@ def portfolio(request):
         yaxis2=dict(title="Price (Stocks)", overlaying="y", side="right"),  # 오른쪽 y축
     )
 
-    if request.headers.get("x-requested-with") == "XMLHttpRequest":
-        graph_html = fig.to_html(full_html=False)  # Plotly 그래프를 HTML로 변환
-        return JsonResponse({"graph_html": graph_html}, safe=False)  # HTML 반환
+    # pie 그래프
+    pie_fig = make_subplots(
+        rows=1,
+        cols=2,
+        specs=[[{"type": "domain"}, {"type": "domain"}]],
+        subplot_titles=("사용자 설정 자산 비중", "최적화된 자산 비중"),
+    )
+
+    pie_fig.add_traces(
+        go.Pie(labels=list(user_weight.keys()), values=list(user_weight.values())),
+        rows=1,
+        cols=1,
+    )
+    pie_fig.add_traces(
+        go.Pie(labels=list(weights_sh.keys()), values=list(weights_sh.values())),
+        rows=1,
+        cols=2,
+    )
+
+    # bar 그래프
+    bar_fig = make_subplots()
+
+    col = [
+        "연간 기대 수익률",
+        "연간 변동성",
+        "샤프 비율",
+        "누적 수익률",
+        "최대 낙폭(MDD)",
+    ]
+    user_y = [
+        round(user_port[0], 2),
+        round(user_port[1], 2),
+        round(user_port[2], 2),
+        round(cumulative_returns.iloc[-1], 2),
+    ]
+
+    optim_y = [
+        round(port[0], 2),
+        round(port[1], 2),
+        round(port[2], 2),
+        round(clean_cumulative_returns.iloc[-1], 2),
+    ]
+
+    bar_fig.add_trace(go.Bar(x=col, y=user_y, name="사용자 포트폴리오"))
+    bar_fig.add_trace(go.Bar(x=col, y=optim_y, name="최적화된 포트폴리오"))
+
+    bar_fig.update_layout(title_text="포트폴리오 성과 비교", title_x=0.5)
 
     # 일반 요청
-    graph_html = fig.to_html(full_html=False)
+    line_graph_html = line_fig.to_html(full_html=False)
+    pie_graph_html = pie_fig.to_html(full_html=False)
+    bar_graph_html = bar_fig.to_html(full_html=False)
 
     context = {
         # 설정한 포트폴리오
@@ -338,22 +403,23 @@ def portfolio(request):
             "연간 변동성": f"{user_port[1]:.2f}",  # 연간 변동성
             "샤프 비율": f"{user_port[2]:.2f}",  # 샤프비율
             "누적 수익률": round(cumulative_returns.iloc[-1], 2),  # 누적 수익률
-            "최대 낙폭(MDD)": round(max_drawdown, 2),  # 최대 낙폭(MDD)
         },
         # 최적화된 포트폴리오
-        "optimized_weights": weigths_sh,  # 자산 비중
+        "optimized_weights": weights_sh,  # 자산 비중
         "Discrete_allocation": allocation,  # 각 항목 별 개별 할당
         "portfolio_performance": {
             "연간 기대 수익률": f"{port[0]:.2f}",  # 연간 기대 수익률
             "연간 변동성": f"{port[1]:.2f}",  # 연간 변동성
             "샤프 비율": f"{port[2]:.2f}",  # 샤프비율
             "누적 수익률": round(clean_cumulative_returns.iloc[-1], 2),  # 누적 수익률
-            "최대 낙폭(MDD)": round(clean_max_drawdown, 2),  # 최대 낙폭(MDD)
         },
+        "mdd_mean": mdd_mean,
         "Funds_remainimg": f"{leftover:.2f}",
         "exchange_rate": exchange_rate,
         # 시각화 코드
-        "graph": graph_html,
+        "line_graph": line_graph_html,
+        "pie_graph": pie_graph_html,
+        "bar_graph": bar_graph_html,
         "default_start": start,  # 시작 날짜 유지
         "default_end": end,  # 종료 날짜 유지
         "default_tick": ",".join(tick),  # 입력한 종목 유지

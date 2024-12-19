@@ -97,27 +97,80 @@
         </div>  
         
         <div>
-          <label for="tick">주식 종목</label>
-          <input type="text" id="tick" name="ick" value="{{ default_tick }}">
-
           <label for="btc">가상화폐 종목</label>
           <input type="text" id="btc" name="btc" value="{{ default_btc }}">
+
+          <label for="tick">주식 종목</label>
+          <input type="text" id="tick" name="tick" value="{{ default_tick }}">
         </div>
 
         <div>
           <label for="btc">자산 비중</label>
-          <input type="text" id="gravity" name="gravity">
+          <input type="text" id="weight" name="weight" value = "{{ default_weight }}">
 
           <label for="btc">초기 자금</label>
-          <input type="text" id="price" name="price">
+          <input type="text" id="price" name="price" value = "{{ default_price }}">
           
         </div>
         <button type="submit">확인</button>
       </form>
 
       <!-- 그래프 표시 -->
-      <div id="graph">
-          {{ graph|safe }}
+      <div id="line_graph">
+          {{ line_graph|safe }}
+      </div>
+
+      <!-- 포트폴리오 -->
+      <div>
+        <h2>User Portfolio</h2>
+        <p>[설정한 자산 비중]</p>
+        {% for key, value in set_weight.items %}
+          <p>{{ key }} : {{ value }}</p>
+        {% endfor %}
+        <p>[개별 할당]</p>
+        {% for key, value in user_allocation.items %}
+          <p>{{ key }} : {{ value }}</p>
+        {% endfor %}
+        <p>[설정한 포트포리오 성과]</p>
+        {% for key, value in user_portfolio.items %}
+          <p>{{ key }} : {{ value }}</p>
+        {% endfor %}
+        <p>[남은 자금]</p>
+        <p>{{user_leftover}}</p>
+        </div>
+
+        <div>
+        <h2>optimized Portfolio</h2>
+        <p>[최적화된 자산 비중]</p>
+        {% for key, value in optimized_weights.items %}
+          <p>{{ key }} : {{ value }}</p>
+        {% endfor %}
+        <p>[개별 할당]</p>
+        {% for key, value in Discrete_allocation.items %}
+          <p>{{ key }} : {{ value }}</p>
+        {% endfor %}
+        <p>[최적화된 포트포리오 성과]</p>
+        {% for key, value in portfolio_performance.items %}
+          <p>{{ key }} : {{ value }}</p>
+        {% endfor %}
+        <p>[남은 자금]</p>
+        <p>{{Funds_remainimg}}</p>
+
+        <p>[최대 낙폭(MDD)]</p>
+        <p>{{ mdd_mean }}%</p>
+
+        <p>[사용한 환율(USD)]</p>
+        <p>{{ exchange_rate }}</p>
+      </div>
+
+      <!-- pie 그래프 표시 -->
+      <div id="pie_graph">
+          {{ pie_graph|safe }}
+      </div>
+
+      <!-- Bar 그래프 표시 -->
+      <div id="bar_graph">
+          {{ bar_graph|safe }}
       </div>
 
       <!-- 포트폴리오 -->
