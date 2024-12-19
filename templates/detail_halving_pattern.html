@@ -228,15 +228,15 @@
 <hr>
     <div class="heading_container" >
         <h2>
-            로그 누적 수익률로 본 패턴 
+            누적 수익률로 본 패턴 
         </h2>
     </div>
-
+<!-- 이미지 그래프 -> plotly로 변환 -->
     <section calss="who_section layout_padding">
       <div>
         <h3> 2010~2024 </h3>
-        <h3><strong> 반감기 별 수익률 </strong></h3>
-          <img src="/media/images/halving_patterns/halving_all_log.png" alt="반감기 별 그래프(수익률) " width="800" >       
+        <h3><strong> 반감기 별 수익률 </strong></h3>          
+          <img src="/media/images/halving_patterns/halving_all_log.png" alt="반감기 별 그래프(누적수익률) " width="800" >
         <p>반감기 별로 그려본 누적 수익률 그래프입니다.</p>
           <ul>
             <li> 1차~3차 반감기의 수익률을 보면, 상승하는 지점과 하락하는 지점의 시기가 비슷합니다.</li>
@@ -247,9 +247,20 @@
       
       <div>
         <h3><br><strong> 반감기 패턴 확인 </strong></h3>
+        
         <p>그래프로 보면 비슷해보이는데, 실제로 반감기 패턴이 있을까요? </p>
         <p>정해진 기간별로 어떠한 패턴을 보이는 것을 '계절성'이라고 하는데요, 반감기 별로 계절성이 있는지 알아보았습니다. </p>
-        <img src="/media/images/halving_patterns/halving_seasonal_decomposition.png" alt="" width="600" >       
+        <img src="/media/images/halving_patterns/halving_pattern_BTC_Close.png" alt="반감기 별 그래프(종가) " width="500" >
+        <img src="/media/images/halving_patterns/halving_pattern_trend.png" alt="반감기 별 그래프(트렌드) " width="500" >
+        <img src="/media/images/halving_patterns/halving_pattern_seasonal.png" alt="반감기 별 그래프(계절성) " width="500" >
+        <img src="/media/images/halving_patterns/halving_pattern_resid.png" alt="반감기 별 그래프(잔차) " width="500" >
+        <p>회색 점선으로 반감기를 표시했습니다 </p>
+        <ul>
+          <li> Trend (추세): 시간이 지남에 따라 완만하게 상승하다가 2020년 이후 급격한 증가를 보이고 있습니다. </li>
+          <li> Seasonal (계절성): 데이터의 반복되는 패턴이 뚜렷하게 나타납니다. 특정 주기에 따라 데이터가 일정하게 상승 및 하강하는 모습을 보입니다. 이 패턴은 기간(1450일)이 길기 때문에 장기적인 사이클을 나타낼 수 있습니다.</li>
+          <li>Residual (잔차): 추세와 계절성을 계산했을 때 Close(종가)와의 차이를 나타낸 것입니다. 차이가 적을 수록 계절성의 패턴이 잘 드러난다는 뜻입니다. </li>
+        </ul> 
+        <p>결론적으로, 비트코인은 반감기별 패턴이 있다고 볼 수 있습니다.</p>
       </div>
 
 
@@ -263,7 +274,6 @@
         <!-- </div> -->
       <!-- 토글 종료 -->       
     </section>
-</section>
 <section class="contact_section layout_padding">
   <div class="container">
 
@@ -273,17 +283,56 @@
           </h2>
       </div>
       
+      <!-- 이미지 -> plotly 변경 -->
       <section calss="who_section layout_padding">
           <div class="container">
               <div class="detail-box">
                   
                   <h4>반감기 분류</h4>
-                  <p>반감기는 평균적으로 약 1400일 주기로 찾아옵니다. </p>
-                  <p></p>
+                  <p>반감기는 평균적으로 약 1450일 주기로 찾아옵니다. </p>
+                  <p>해당 기간을 다섯개의 구간으로 나누면 비슷한 패턴이 보입니다!</p>
+                  <p>(각 반감기 기간 / 5 = 약 9개월)</p>
+                  <img src="/media/images/halving_patterns/halving_log_patten_split.png" alt="반감기 별 그래프(잔차) " width="800" >
+                  <ul>
+                    <li> 상승 : 반감기가 시작된지 얼마 되지 않은 시점으로 가격이 상승하는 특징이 있습니다. </li>
+                    <li> 과열 : 과열되는 시기로 급등하는 경향이 있고 고점이 포함되어 하락에 주의해야하는 시점입니다. </li>
+                    <li> 하락 : 고점을 찍은 후 하락하는 경향이 있는 시기입니다.</li>
+                    <li> 횡보 : 하락 후 횡보하는 경향이 있는 시기입니다. </li>
+                    <li> 회복기대 : 다음 반감기가 얼마 남지 않은 시점으로, 가격상승 기대감으로 오르는 시기입니다. </li>
+                  </ul> 
+
               </div>
           </div>
       </section>
 <hr>
+
+  <section calss="who_section layout_padding">
+    <div class="container">
+        <div class="detail-box">
+          <div class="heading_container">
+              <h2>
+              내용 정리
+              </h2>
+          </div>
+            <p>
+              비트코인 반감기는 단순히 채굴 보상이 줄어드는 것을 넘어, 시장 전체에 큰 영향을 미치는 중요한 이벤트입니다.
+              반감기마다 공급 속도가 줄어 희소성이 증가하고, 이로 인해 투자자들의 관심과 시장의 활기가 촉진됩니다. 
+              또한, 이러한 변화는 비트코인을 넘어 NFT, 메타버스 같은 다른 암호화폐 및 신흥 기술 분야에도 긍정적인 영향을 끼칩니다.
+            </p>
+            <p>
+              데이터를 통해 확인한 반감기별 패턴은 상승, 과열, 하락, 횡보, 회복기대의 다섯 가지 주기로 나눌 수 있으며, 반감기가 약 1450일 주기로 찾아온다는 점에서 장기적인 계절성을 지닙니다. 
+              이러한 패턴은 투자자들에게 시장의 흐름을 이해하고 대응하는데 있어 도움이 될 수 있습니다.
+            </p>
+            <p>
+              결론적으로, 비트코인의 반감기는 단순한 이벤트가 아니라, 전체 암호화폐 시장의 방향을 좌우하는 중요한 기회이자 도전입니다. 데이터를 바탕으로 시장의 패턴을 이해하고 전략적으로 접근한다면, 이 변화를 더 나은 결과로 연결시킬 수 있을 것입니다. 비트코인의 다음 반감기는 언제일지, 그리고 시장에 어떤 영향을 미칠지 기대해 봅시다!
+            </p>
+        </div>
+    </div>
+  </section>
+
+
+  
+</section>
 </div>
   <!-- info section -->
   <section class="info_section ">
