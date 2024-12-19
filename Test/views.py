@@ -22,7 +22,6 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import io
 import urllib, base64
-from mpl_finance import candlestick2_ochl
 
 # 포트폴리오
 # 포트포리오
