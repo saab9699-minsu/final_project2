@@ -12,5 +12,5 @@ urlpatterns = [
     path("portfolio/", views.portfolio, name="portfolio"),
 
     path("detail_halving_pattern/", views.halving_pattern, name="halving_pattern"),
-    path("detail_issue/", views.detail_issue, name="issue"),
+    path("detail_issue/", views.detail_issue, name="detail_issue"),
 ]
