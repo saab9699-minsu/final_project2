@@ -3,6 +3,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 from datetime import date
+from datetime import datetime, timedelta
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from django.http import JsonResponse
@@ -544,3 +545,101 @@ def portfolio(request):
         "default_btc": ",".join(btc),  # 입력한 BTC 종목 유지
     }
     return render(request, "portfolio.html", context)
+
+
+def prophet(request):
+    #오늘 날짜 
+    today = pd.to_datetime(datetime.today().strftime("%Y-%m-%d"))
+
+    # 2024년 12월 20일까지 업데이트 된 파일 
+    train = pd.read_csv("./data/web_btc.csv", index_col = 0)
+    last_updatedate = pd.to_datetime(train["ds"].iloc[-1]) + timedelta(1)
+    
+    # 최근 날짜 데이터 업비트에서 불러오기  
+    btc_df = pyupbit.get_ohlcv("USDT-BTC", interval = "day", count = 10)
+    btc_df = btc_df.reset_index()
+    btc_df = btc_df.loc[btc_df["index"] > last_updatedate, ["index", "close"]]
+    btc_df.columns = ["ds", "y"]
+    btc_df["ds"] = btc_df["ds"].dt.strftime("%Y-%m-%d")
+    
+    # 최근 자료 결합 및 저장
+    train = pd.concat([train, btc_df], axis = 0)
+    train.to_csv("./data/web_btc.csv")
+
+    # 프로펫 예측 데이터 불러오기 
+    fcst = pd.read_csv("./data/web_fcst.csv", index_col = 0)
+
+    #Figure 생성하기
+    fig = go.Figure()
+
+    # 아래쪽 경계 (yhat_lower)
+    fig.add_trace(go.Scatter(
+        x=fcst["ds"],
+        y=fcst["yhat_lower"],
+        fill=None,
+        line_color='rgba(0,100,80,0)',  # 경계선을 숨김
+        name='예측값 범위(하단)',  # 범례 이름
+        showlegend=True
+    ))
+
+    # 위쪽 경계 (yhat_upper), 아래쪽과의 영역을 채움
+    fig.add_trace(go.Scatter(
+        x=fcst["ds"],
+        y=fcst["yhat_upper"],
+        fill='tonexty',  # 이전 y 값과의 영역을 채움
+        fillcolor='skyblue',  # 채움 색상
+        line_color='rgba(0,100,80,0)',  # 경계선을 숨김
+        name='예측값 범위(상단)',  # 범례 이름
+        showlegend=True
+    ))
+
+    # 예측 값 표시 
+    fig.add_trace(go.Scatter(
+        x=fcst["ds"],
+        y=fcst["yhat"],
+        line_color='#1f77b4',
+        name='예측값',  # 범례 이름
+        showlegend=True
+    ))
+
+    # 실제값 표시 
+    fig.add_trace(go.Scatter(
+        x=train["ds"],
+        y=train["y"],
+        name='실제값',  # 범례 이름
+        showlegend=True
+    ))
+
+    # 슬라이더 추가 (3개월 단위)
+    fig.update_layout(
+        xaxis=dict(
+            rangeslider=dict(
+                visible=True  # 슬라이더 활성화
+            ),
+            # (12개월)1달 이후 포함
+            range=[today - pd.DateOffset(months=11), today + pd.DateOffset(months=1)],  
+        ),
+        template="plotly_white", 
+        width= 1000,    
+        height= 600
+    )
+
+    fig.update_traces(mode='lines')
+
+    prophet = fig.to_html(full_html=False)
+
+    time_li = [1, 30, 60, 90, 180, 365]
+
+    for i in range(len(time_li)) : 
+        date_later = time_li[i]
+        # pred_date = fcst.loc[fcst["ds"] == (today + timedelta(time_li[i])),"ds"].astype("str").values[0]
+        # pred_btc = fcst.loc[fcst["ds"] == (today + timedelta(time_li[i])),"yhat"].values[0]
+    
+    context = {
+        "prophet" : prophet,
+        "date_later" : date_later,
+        # "pred_date" : pred_date,
+        # "pred_btc" : pred_btc,
+    }
+
+    return render(request, "test.html",  context)
