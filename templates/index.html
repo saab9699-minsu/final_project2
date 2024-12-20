@@ -173,32 +173,38 @@
     <!-- end slider section -->
   </div>
   <img src="data:image/png;base64,{{ graph }}" alt="BTC 가격 그래프">
-  <div style="margin: auto; padding: 0 300px; margin: 100px 0; display: flex;">
-    <div>
+  <div style="margin: auto; padding: 0 250px; margin: 100px 0; display: flex;">
+    <div style="margin-left: 0px; padding: 0 50px 50px 50px;">
+      <h2 style="margin-bottom: 20px;">코인시세</h2>
+      <table>
+        <tbody>
+          {% for coin in coins %}
+          <tr>
+            <td style="padding: 15px;">{{ coin.name }}</td>
+            <td style="padding: 15px;">{{ coin.price }}원</td>
+            {% if coin.change > 0 %}
+              <td style="color: red; padding: 15px;">+{{ coin.change }}%</td>
+            {% elif coin.change == 0 %}
+              <td style="color: black; padding: 15px;">{{ coin.change }}%</td>
+            {% else %}
+              <td style="color: blue; padding: 15px;">{{ coin.change }}%</td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div style="width: 30%;">
       <h2 style="padding-bottom: 30px;">최신뉴스</h1>
       {% for new in news %}
         <a href="{{ new.href }}" style="color: black;">{{ new.title }}</a>
         <p style="color: black;">{{ new.date }}</p>
       {% endfor %}
     </div>
-    <div style="margin-left: 100px; padding: 50px;">
-      <table>
-        <tbody>
-          {% for coin in coins %}
-          <tr>
-            <td style="padding: 10px;">{{ coin.name }}</td>
-            <td style="padding: 10px;">{{ coin.price }}원</td>
-            {% if coin.change > 0 %}
-              <td style="color: red; padding: 10px;">+{{ coin.change }}%</td>
-            {% elif coin.change == 0 %}
-              <td style="color: black; padding: 10px;">{{ coin.change }}%</td>
-            {% else %}
-              <td style="color: blue; padding: 10px;">{{ coin.change }}%</td>
-            {% endif %}
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+    <div style="display: flex; flex-direction: column;">
+      <h2 style="padding-left: 110px;">뉴스 긍부정</h2>
+      <img src="data:image/png;base64,{{ pie_chart }}" alt="파이 차트" />
+      <small style="color: gray;">최신뉴스 35개 기준</small>
     </div>
   </div>
   <!-- do section -->
