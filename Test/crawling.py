@@ -8,41 +8,32 @@ def news_crawling():
     url = "https://kr.investing.com/news/cryptocurrency-news"
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'}
 
-    title_list = []
-    company_list = []
-    date_list = []
-    href_list = []
+    news_list = []
 
     try:
         response = requests.get(url, headers=headers)
-        response.raise_for_status()  # HTTP 오류 발생 시 예외를 발생시킴
+        response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
         num = 0
         for i in soup.select("div.min-w-0 div > div > ul > li"):
-            if num > 4:
-                break
-            title_list.append(i.select("a")[0].text.strip())
-            company_list.append(i.select("li span")[1].text)
-            date_list.append(i.select("li time")[0].text)
-            href_list.append(i.select("a")[0]["href"])
+            news_list.append({
+                "title" : i.select("a")[0].text.strip(),
+                "company" : i.select("li span")[1].text,
+                "date" : i.select("li time")[0].text,
+                "href" : i.select("a")[0]["href"],
+            })
             num += 1
 
+    except:
+        pass
 
-    except requests.exceptions.HTTPError as e:
-        print(f"HTTPError: {e.response.status_code} - {e.response.reason}")
-    except Exception as e:
-        print(f"Error: {e}")
-
-    df = pd.DataFrame()
-    df["title"] = title_list
-    df["company"] = company_list
-    df["date"] = date_list
-    df["href"] = href_list
-    return df
+    return news_list
 
 def upbit():
-    df = pyupbit.get_ohlcv("KRW-BTC", interval = "mintue5", count = 24 * 12)
+    df = pyupbit.get_ohlcv("KRW-BTC", interval = "day", count = 20)
     return df
+
+
 
 def upbit2():
     coin_list = ["KRW-BTC", "KRW-ETH", "KRW-XRP", "KRW-SOL", "KRW-DOGE"]
@@ -52,7 +43,7 @@ def upbit2():
         btc_df = pyupbit.get_ohlcv(coin, interval = "day", count = 2)
         coin_data.append(({
             "name" : name,
-            "price" : btc_df["close"][1],
-            "change" : (btc_df["close"].pct_change() * 100)[1].round(2),
+            "price" : btc_df["close"].iloc[1],
+            "change" : (btc_df["close"].pct_change() * 100).iloc[1].round(2),
         }))
     return coin_data

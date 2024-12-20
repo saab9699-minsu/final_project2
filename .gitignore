@@ -162,4 +162,4 @@ cython_debug/
 #.idea/
 
 # 특정 model 제외 
-[model]/[KR-FinBert-SC]/[model.safetensors]
+.model/
