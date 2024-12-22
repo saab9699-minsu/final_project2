@@ -6,9 +6,13 @@ from datetime import date
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from django.http import JsonResponse
+from django.conf import settings
+import os
+from sklearn.preprocessing import MinMaxScaler
 
 # plotly 템플릿
 import plotly.io as pio
+import plotly.express as px
 
 pio.templates.default = "plotly_white"
 
@@ -22,10 +26,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import io
 import urllib, base64
-from mpl_finance import candlestick2_ochl
 
 # 포트폴리오
-# 포트포리오
 from pypfopt import risk_models
 from pypfopt import expected_returns
 from pypfopt.efficient_frontier import EfficientFrontier
@@ -130,7 +132,7 @@ def index(request):
 def portfolio(request):
     # 주식, 비트코인 그래프 그리기기
     # 기본값 설정
-    default_start = "2023-01-01"
+    default_start = "2024-01-01"
     default_end = date.today().isoformat()
     default_tick = ["SPY", "GLD", "TLT"]  # 기본 종목
     default_btc = ["BTC-USD"]  # 기본 BTC 심볼
@@ -426,3 +428,163 @@ def portfolio(request):
         "default_btc": ",".join(btc),  # 입력한 BTC 종목 유지
     }
     return render(request, "portfolio.html", context)
+
+
+def corr(request):
+    file_path = os.path.join(settings.BASE_DIR, "data", "USD_경제통합.csv")
+    df = pd.read_csv(file_path, index_col="Date")
+    df_mean = df.groupby("ym").mean()
+
+    mm = MinMaxScaler()
+    df_scaled = mm.fit_transform(df_mean)
+    df_scaled = pd.DataFrame(df_scaled)
+    df_scaled.columns = df_mean.columns
+    df_scaled.index = df_mean.index
+
+    df1 = df.loc["2012-11-28":"2016-07-08"].groupby("ym").mean()
+    df2 = df.loc["2016-07-09":"2020-05-10"].groupby("ym").mean()
+    df3 = df.loc["2020-05-11":"2024-04-19"].groupby("ym").mean()
+    df4 = df.loc["2024-04-20":].groupby("ym").mean()
+
+    # 전체기간 상관관계 heatmap
+    full_corr_fig = px.imshow(
+        df.corr(numeric_only=True),
+        text_auto=".2",
+        aspect="auto",
+        color_continuous_scale="PuBU",
+    )
+    full_corr_fig.update_layout(width=700, height=600)
+
+    # 반감기별 상관관계
+    df_halving = pd.DataFrame()
+
+    halving = [df1, df2, df3, df4]
+
+    for i, df_corr in enumerate(halving, start=1):
+        corr = df_corr.corr(numeric_only=True)["btc"]
+        df_halving[f"{i}차 반감기기"] = corr
+
+    # 주식시장 그래프
+    stock_fig = make_subplots(rows=2, cols=1)
+    # line 그래프프
+    for i in df_scaled[["btc", "w5000", "buffet"]]:
+        stock_fig.add_trace(
+            go.Scatter(x=df_scaled.index, y=df_scaled[i], name=f"{i}"), row=1, col=1
+        )
+    # bar그래프
+    for i in df_halving.loc[["w5000", "buffet"], :]:
+        stock_fig.add_trace(
+            go.Bar(
+                x=df_halving.loc[["w5000", "buffet"], :].index,
+                y=df_halving.loc[["w5000", "buffet"], i],
+                name=f"{i}",
+            ),
+            row=2,
+            col=1,
+        )
+
+    # 경제 성장 그래프(gdp, 경제성장률)
+    economy_fig = make_subplots(rows=2, cols=1)
+
+    # line 그래프
+    for i in df_scaled[["btc", "gdp", "경제성장률(USD)"]]:
+        economy_fig.add_trace(
+            go.Scatter(x=df_scaled.index, y=df_scaled[i], name=f"{i}"), row=1, col=1
+        )
+    # bar그래프
+    for i in df_halving.loc[["gdp", "경제성장률(USD)"], :]:
+        economy_fig.add_trace(
+            go.Bar(
+                x=df_halving.loc[["gdp", "경제성장률(USD)"], :].index,
+                y=df_halving.loc[["gdp", "경제성장률(USD)"], i],
+                name=f"{i}",
+            ),
+            row=2,
+            col=1,
+        )
+
+    # 물가 그래프
+    price_fig = make_subplots(rows=2, cols=1)
+
+    # line 그래프프
+    for i in df_scaled[
+        ["btc", "소비자물가지수(USD)", "생산자물가지수(USD)", "물가상승률(USD)"]
+    ]:
+        price_fig.add_trace(
+            go.Scatter(x=df_scaled.index, y=df_scaled[i], name=f"{i}"), row=1, col=1
+        )
+
+    # bar그래프
+    for i in df_halving.loc[
+        ["소비자물가지수(USD)", "생산자물가지수(USD)", "물가상승률(USD)"], :
+    ]:
+        price_fig.add_trace(
+            go.Bar(
+                x=df_halving.loc[
+                    ["소비자물가지수(USD)", "생산자물가지수(USD)", "물가상승률(USD)"], :
+                ].index,
+                y=df_halving.loc[
+                    ["소비자물가지수(USD)", "생산자물가지수(USD)", "물가상승률(USD)"], i
+                ],
+                name=f"{i}",
+            ),
+            row=2,
+            col=1,
+        )
+
+    # 통화 정책 그래프
+    monetary_fig = make_subplots(rows=2, cols=1)
+
+    for i in df_scaled[["btc", "기준금리(USD)", "통화량(USD)", "환율"]]:
+        monetary_fig.add_trace(
+            go.Scatter(x=df_scaled.index, y=df_scaled[i], name=f"{i}"), row=1, col=1
+        )
+
+    # bar그래프
+    for i in df_halving.loc[["기준금리(USD)", "통화량(USD)", "환율"], :]:
+        monetary_fig.add_trace(
+            go.Bar(
+                x=df_halving.loc[["기준금리(USD)", "통화량(USD)", "환율"], :].index,
+                y=df_halving.loc[["기준금리(USD)", "통화량(USD)", "환율"], i],
+                name=f"{i}",
+            ),
+            row=2,
+            col=1,
+        )
+
+    # 대체 자산 그래프
+    asset_fig = make_subplots(rows=2, cols=1)
+    for i in df_scaled[["btc", "금가격", "채권(USD)"]]:
+        asset_fig.add_trace(
+            go.Scatter(x=df_scaled.index, y=df_scaled[i], name=f"{i}"), row=1, col=1
+        )
+
+    # bar그래프
+    for i in df_halving.loc[["금가격", "채권(USD)"], :]:
+        asset_fig.add_trace(
+            go.Bar(
+                x=df_halving.loc[["금가격", "채권(USD)"], :].index,
+                y=df_halving.loc[["금가격", "채권(USD)"], i],
+                name=f"{i}",
+            ),
+            row=2,
+            col=1,
+        )
+
+    # 일반 요청
+    full_corr_graph_html = full_corr_fig.to_html(full_html=False)
+    stock_graph_html = stock_fig.to_html(full_html=False)
+    economy_graph_html = economy_fig.to_html(full_html=False)
+    price_graph_html = price_fig.to_html(full_html=False)
+    monetary_graph_html = monetary_fig.to_html(full_html=False)
+    asset_graph_html = asset_fig.to_html(full_html=False)
+
+    context = {
+        "full_corr_graph": full_corr_graph_html,
+        "stock_graph": stock_graph_html,
+        "economy_graph": economy_graph_html,
+        "price_graph": price_graph_html,
+        "monetary_graph": monetary_graph_html,
+        "asset_graph": asset_graph_html,
+    }
+    return render(request, "corr.html", context)
