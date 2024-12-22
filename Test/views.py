@@ -6,9 +6,13 @@ from datetime import date
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from django.http import JsonResponse
+from django.conf import settings
+import os
+from sklearn.preprocessing import MinMaxScaler
 
 # plotly 템플릿
 import plotly.io as pio
+import plotly.express as px
 
 pio.templates.default = "plotly_white"
 
@@ -20,6 +24,7 @@ import pyupbit
 import mplfinance as mpf
 from mpl_finance import candlestick2_ochl
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import io
@@ -28,7 +33,6 @@ from PIL import Image
 from keras.models import load_model
 
 # 포트폴리오
-# 포트포리오
 from pypfopt import risk_models
 from pypfopt import expected_returns
 from pypfopt.efficient_frontier import EfficientFrontier
@@ -49,55 +53,63 @@ def contact(request):
     df = upbit()
     fig = plt.figure(figsize=(5, 5))  # 224x224에 맞추기 위해 5x5 인치로 설정
     ax1 = fig.add_subplot(1, 1, 1)
-    
+
     candlestick2_ochl(
-        ax1, df['open'], df['close'], df['high'], df['low'], 
-        width=1, colorup='r', colordown='b'
+        ax1,
+        df["open"],
+        df["close"],
+        df["high"],
+        df["low"],
+        width=1,
+        colorup="r",
+        colordown="b",
     )
-    
+
     ax1.grid(False)
     ax1.set_xticklabels([])
     ax1.set_yticklabels([])
     ax1.xaxis.set_visible(False)
     ax1.yaxis.set_visible(False)
-    ax1.axis('off') 
+    ax1.axis("off")
     plt.tight_layout()
-    
+
     # 이미지를 버퍼에 저장 (PNG 형식)**
     buffer = io.BytesIO()
-    plt.savefig(buffer, format='png', bbox_inches='tight', pad_inches=0)
+    plt.savefig(buffer, format="png", bbox_inches="tight", pad_inches=0)
     buffer.seek(0)
-    image_png = buffer.getvalue() 
-    cnn_chart = base64.b64encode(image_png).decode('utf-8')
-    
+    image_png = buffer.getvalue()
+    cnn_chart = base64.b64encode(image_png).decode("utf-8")
+
     # PIL로 이미지를 열고 크기를 조정
     image = Image.open(buffer)
-    image = image.convert('RGB')
+    image = image.convert("RGB")
     image = image.resize((224, 224))  # CNN 모델 입력 크기 (224x224)로 변경
     image_array = np.array(image)  # Numpy 배열로 변환 (224, 224, 3)
 
     buffer.close()
     plt.close(fig)
 
-    model = load_model('./model/cnn/CNN-20-224-3(0.54).keras')
+    model = load_model("./model/cnn/CNN-20-224-3(0.54).keras")
 
     image_array = image_array / 255.0  # 픽셀 값을 0~1 사이로 정규화
-    image_array = np.expand_dims(image_array, axis=0)  # (224, 224, 3) -> (1, 224, 224, 3)
+    image_array = np.expand_dims(
+        image_array, axis=0
+    )  # (224, 224, 3) -> (1, 224, 224, 3)
 
     # 모델에 예측 수행
     prediction = model.predict(image_array)
 
     up_down = np.argmax(prediction, axis=1)
-    per = (prediction[0].max() * 100).round(3) 
+    per = (prediction[0].max() * 100).round(3)
     up_down2 = "상승"
     if up_down[0] == 0:
         up_down2 = "하락"
 
     context = {
-        "cnn_chart" : cnn_chart,
-        "prediction" : prediction,
-        "per" : per,
-        "up_down2" : up_down2,
+        "cnn_chart": cnn_chart,
+        "prediction": prediction,
+        "per": per,
+        "up_down2": up_down2,
     }
 
     return render(request, "contact.html", context)
@@ -112,14 +124,16 @@ def do(request):
 def halving_pattern(request):
     return render(request, "detail_halving_pattern.html")
 
+
 def detail_issue(request):
     return render(request, "detail_issue.html")
+
 
 # ==================
 # ====== main ======
 # ==================
 def index(request):
-    
+
     # ==========================
     # ======= 뉴스 실시간 =======
     # ==========================
@@ -141,8 +155,8 @@ def index(request):
 
     news2["분류"] = label_list1
 
-    news2["하락"] = news2["title"].map(lambda x : 1 if x.find("하락") > 0 else 0)
-    news2["상승"] = news2["title"].map(lambda x : 1 if x.find("상승") > 0 else 0)
+    news2["하락"] = news2["title"].map(lambda x: 1 if x.find("하락") > 0 else 0)
+    news2["상승"] = news2["title"].map(lambda x: 1 if x.find("상승") > 0 else 0)
     news2.loc[(news2["하락"] == 1) & (news2["분류"] != "positive"), "분류"] = "negative"
     news2.loc[(news2["상승"] == 1) & (news2["분류"] != "negative"), "분류"] = "positive"
 
@@ -150,16 +164,24 @@ def index(request):
     ratio = news2_counts.values
     labels = news2_counts.index
     explode = [0.05, 0.05, 0.05]
-    plt.figure(figsize = (4, 3))
-    plt.pie(ratio, labels = labels, autopct = "%.1f%%", startangle = 260, counterclock = False,
-            explode = explode, shadow = True, colors = ["gray" ,"skyblue", "coral"])
-    plt.axis('equal')
+    plt.figure(figsize=(4, 3))
+    plt.pie(
+        ratio,
+        labels=labels,
+        autopct="%.1f%%",
+        startangle=260,
+        counterclock=False,
+        explode=explode,
+        shadow=True,
+        colors=["gray", "skyblue", "coral"],
+    )
+    plt.axis("equal")
     buffer = io.BytesIO()
-    plt.savefig(buffer, format='png') 
-    buffer.seek(0) 
-    image_png = buffer.getvalue() 
+    plt.savefig(buffer, format="png")
+    buffer.seek(0)
+    image_png = buffer.getvalue()
     buffer.close()
-    pie_chart = base64.b64encode(image_png).decode('utf-8')
+    pie_chart = base64.b64encode(image_png).decode("utf-8")
     plt.close()
 
     # ================================
@@ -178,7 +200,9 @@ def index(request):
     # 빨간색 점선 가로선 추가
     latest_price_line = [last_price] * len(btc_df)  # 모든 행에 동일한 최신 가격 추가
     addplot = [
-        mpf.make_addplot(latest_price_line, color="red", linestyle="dashed", alpha = 0.5),  # 빨간색 점선 가로선
+        mpf.make_addplot(
+            latest_price_line, color="red", linestyle="dashed", alpha=0.5
+        ),  # 빨간색 점선 가로선
     ]
 
     # 차트 스타일 설정 (음봉 파란색, 양봉 빨간색)
@@ -187,7 +211,7 @@ def index(request):
         down="blue",  # 음봉 (하락) 색상
         edge="inherit",  # 테두리 색상은 캔들 색상과 동일
         wick="inherit",  # 심지 색상은 캔들 색상과 동일
-        volume="in"  # 거래량 색상 설정
+        volume="in",  # 거래량 색상 설정
     )
     s = mpf.make_mpf_style(marketcolors=mc, gridcolor="#e6e6e6")  # 스타일 설정
 
@@ -207,18 +231,18 @@ def index(request):
     ax[0].text(
         x=len(btc_df) + 30,  # x축 위치 (마지막 데이터 위치)
         y=last_price,  # y축 위치 (최신 가격)
-        s=f'{last_price:,.0f} KRW',  # 천 단위 쉼표 추가
+        s=f"{last_price:,.0f} KRW",  # 천 단위 쉼표 추가
         color="white",  # 텍스트 색상
         fontsize=12,  # 폰트 크기
         fontweight="bold",  # 폰트 굵기
-        verticalalignment='center',  # 세로 정렬
-        horizontalalignment='center',  # 가로 정렬
+        verticalalignment="center",  # 세로 정렬
+        horizontalalignment="center",  # 가로 정렬
         bbox=dict(
-            facecolor='red',  # 박스 배경 색상
-            edgecolor='none',  # 테두리 제거
-            boxstyle='larrow,pad=0.4',  # 왼쪽 화살표 모양
-            alpha=0.9  # 투명도 (0=투명, 1=불투명)
-        )
+            facecolor="red",  # 박스 배경 색상
+            edgecolor="none",  # 테두리 제거
+            boxstyle="larrow,pad=0.4",  # 왼쪽 화살표 모양
+            alpha=0.9,  # 투명도 (0=투명, 1=불투명)
+        ),
     )
 
     # 이미지로 변환
@@ -238,9 +262,9 @@ def index(request):
 
     context = {
         "graph": graph,  # 실시간 비트코인시세 그래프
-        "coins": coins, # 실시간 코인시세
-        "news" : news, # 실시간 뉴스
-        "pie_chart" : pie_chart # 실시간 긍부정 pie차트
+        "coins": coins,  # 실시간 코인시세
+        "news": news,  # 실시간 뉴스
+        "pie_chart": pie_chart,  # 실시간 긍부정 pie차트
     }
     return render(request, "index.html", context)
 
@@ -248,7 +272,7 @@ def index(request):
 def portfolio(request):
     # 주식, 비트코인 그래프 그리기기
     # 기본값 설정
-    default_start = "2023-01-01"
+    default_start = "2024-01-01"
     default_end = date.today().isoformat()
     default_tick = ["SPY", "GLD", "TLT"]  # 기본 종목
     default_btc = ["BTC-USD"]  # 기본 BTC 심볼
@@ -544,3 +568,163 @@ def portfolio(request):
         "default_btc": ",".join(btc),  # 입력한 BTC 종목 유지
     }
     return render(request, "portfolio.html", context)
+
+
+def corr(request):
+    file_path = os.path.join(settings.BASE_DIR, "data", "USD_경제통합.csv")
+    df = pd.read_csv(file_path, index_col="Date")
+    df_mean = df.groupby("ym").mean()
+
+    mm = MinMaxScaler()
+    df_scaled = mm.fit_transform(df_mean)
+    df_scaled = pd.DataFrame(df_scaled)
+    df_scaled.columns = df_mean.columns
+    df_scaled.index = df_mean.index
+
+    df1 = df.loc["2012-11-28":"2016-07-08"].groupby("ym").mean()
+    df2 = df.loc["2016-07-09":"2020-05-10"].groupby("ym").mean()
+    df3 = df.loc["2020-05-11":"2024-04-19"].groupby("ym").mean()
+    df4 = df.loc["2024-04-20":].groupby("ym").mean()
+
+    # 전체기간 상관관계 heatmap
+    full_corr_fig = px.imshow(
+        df.corr(numeric_only=True),
+        text_auto=".2",
+        aspect="auto",
+        color_continuous_scale="PuBU",
+    )
+    full_corr_fig.update_layout(width=700, height=600)
+
+    # 반감기별 상관관계
+    df_halving = pd.DataFrame()
+
+    halving = [df1, df2, df3, df4]
+
+    for i, df_corr in enumerate(halving, start=1):
+        corr = df_corr.corr(numeric_only=True)["btc"]
+        df_halving[f"{i}차 반감기기"] = corr
+
+    # 주식시장 그래프
+    stock_fig = make_subplots(rows=2, cols=1)
+    # line 그래프프
+    for i in df_scaled[["btc", "w5000", "buffet"]]:
+        stock_fig.add_trace(
+            go.Scatter(x=df_scaled.index, y=df_scaled[i], name=f"{i}"), row=1, col=1
+        )
+    # bar그래프
+    for i in df_halving.loc[["w5000", "buffet"], :]:
+        stock_fig.add_trace(
+            go.Bar(
+                x=df_halving.loc[["w5000", "buffet"], :].index,
+                y=df_halving.loc[["w5000", "buffet"], i],
+                name=f"{i}",
+            ),
+            row=2,
+            col=1,
+        )
+
+    # 경제 성장 그래프(gdp, 경제성장률)
+    economy_fig = make_subplots(rows=2, cols=1)
+
+    # line 그래프
+    for i in df_scaled[["btc", "gdp", "경제성장률(USD)"]]:
+        economy_fig.add_trace(
+            go.Scatter(x=df_scaled.index, y=df_scaled[i], name=f"{i}"), row=1, col=1
+        )
+    # bar그래프
+    for i in df_halving.loc[["gdp", "경제성장률(USD)"], :]:
+        economy_fig.add_trace(
+            go.Bar(
+                x=df_halving.loc[["gdp", "경제성장률(USD)"], :].index,
+                y=df_halving.loc[["gdp", "경제성장률(USD)"], i],
+                name=f"{i}",
+            ),
+            row=2,
+            col=1,
+        )
+
+    # 물가 그래프
+    price_fig = make_subplots(rows=2, cols=1)
+
+    # line 그래프프
+    for i in df_scaled[
+        ["btc", "소비자물가지수(USD)", "생산자물가지수(USD)", "물가상승률(USD)"]
+    ]:
+        price_fig.add_trace(
+            go.Scatter(x=df_scaled.index, y=df_scaled[i], name=f"{i}"), row=1, col=1
+        )
+
+    # bar그래프
+    for i in df_halving.loc[
+        ["소비자물가지수(USD)", "생산자물가지수(USD)", "물가상승률(USD)"], :
+    ]:
+        price_fig.add_trace(
+            go.Bar(
+                x=df_halving.loc[
+                    ["소비자물가지수(USD)", "생산자물가지수(USD)", "물가상승률(USD)"], :
+                ].index,
+                y=df_halving.loc[
+                    ["소비자물가지수(USD)", "생산자물가지수(USD)", "물가상승률(USD)"], i
+                ],
+                name=f"{i}",
+            ),
+            row=2,
+            col=1,
+        )
+
+    # 통화 정책 그래프
+    monetary_fig = make_subplots(rows=2, cols=1)
+
+    for i in df_scaled[["btc", "기준금리(USD)", "통화량(USD)", "환율"]]:
+        monetary_fig.add_trace(
+            go.Scatter(x=df_scaled.index, y=df_scaled[i], name=f"{i}"), row=1, col=1
+        )
+
+    # bar그래프
+    for i in df_halving.loc[["기준금리(USD)", "통화량(USD)", "환율"], :]:
+        monetary_fig.add_trace(
+            go.Bar(
+                x=df_halving.loc[["기준금리(USD)", "통화량(USD)", "환율"], :].index,
+                y=df_halving.loc[["기준금리(USD)", "통화량(USD)", "환율"], i],
+                name=f"{i}",
+            ),
+            row=2,
+            col=1,
+        )
+
+    # 대체 자산 그래프
+    asset_fig = make_subplots(rows=2, cols=1)
+    for i in df_scaled[["btc", "금가격", "채권(USD)"]]:
+        asset_fig.add_trace(
+            go.Scatter(x=df_scaled.index, y=df_scaled[i], name=f"{i}"), row=1, col=1
+        )
+
+    # bar그래프
+    for i in df_halving.loc[["금가격", "채권(USD)"], :]:
+        asset_fig.add_trace(
+            go.Bar(
+                x=df_halving.loc[["금가격", "채권(USD)"], :].index,
+                y=df_halving.loc[["금가격", "채권(USD)"], i],
+                name=f"{i}",
+            ),
+            row=2,
+            col=1,
+        )
+
+    # 일반 요청
+    full_corr_graph_html = full_corr_fig.to_html(full_html=False)
+    stock_graph_html = stock_fig.to_html(full_html=False)
+    economy_graph_html = economy_fig.to_html(full_html=False)
+    price_graph_html = price_fig.to_html(full_html=False)
+    monetary_graph_html = monetary_fig.to_html(full_html=False)
+    asset_graph_html = asset_fig.to_html(full_html=False)
+
+    context = {
+        "full_corr_graph": full_corr_graph_html,
+        "stock_graph": stock_graph_html,
+        "economy_graph": economy_graph_html,
+        "price_graph": price_graph_html,
+        "monetary_graph": monetary_graph_html,
+        "asset_graph": asset_graph_html,
+    }
+    return render(request, "corr.html", context)

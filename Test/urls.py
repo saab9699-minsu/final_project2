@@ -8,9 +8,9 @@ urlpatterns = [
     path("contact/", views.contact, name="contact"),
     path("do/", views.do, name="do"),
     path("index/", views.index, name="index"),
-    path("", views.index, name="home"), 
+    path("", views.index, name="home"),
     path("portfolio/", views.portfolio, name="portfolio"),
-
     path("detail_halving_pattern/", views.halving_pattern, name="halving_pattern"),
     path("detail_issue/", views.detail_issue, name="issue"),
+    path("corr/", views.corr, name="corr"),
 ]

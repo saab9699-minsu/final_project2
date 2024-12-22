@@ -110,15 +110,17 @@
 
         </div>
         <div class="box arrow-middle arrow_bg">
-          <a href="" style="z-index: 99; display: block; position: relative;" >
+          <a href="{% url 'test:corr' %}" style="z-index: 99; display: block; position: relative;" >
             <div class="img-box">
               <img src="/media/images/d-2.png" alt="">
             </div>
           </a>
           <div class="detail-box">
-            <h6>
-              Development
-            </h6>
+            <a href = "{% url 'test:corr' %}">
+              <h6>
+                상관관계
+              </h6>
+            </a>
           </div>
         </div>
         <div class="box arrow-middle arrow_bg">
