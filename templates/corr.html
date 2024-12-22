@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>Esigned</title>
+
+  <!-- slider stylesheet -->
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,700&display=swap" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="/static/css/style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="/static/css/responsive.css" rel="stylesheet" />
+  
+  <!-- 폰트 적용 추가 -->
+  <style>
+    @font-face {
+        font-family: 'S-CoreDream-3Light';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+    body {
+        font-family: 'S-CoreDream-3Light';
+    }
+    </style>
+    
+<!-- 토글 버튼 추가 -->
+    <script>
+        function toggleVisibility(id) {
+            const element = document.getElementById(id);
+            element.style.display = element.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</head>
+
+<body class="sub_page">
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
+          <a class="navbar-brand" href="{% url 'test:index' %}">
+            <span>
+              Esigned
+            </span>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+              <ul class="navbar-nav  ">
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'test:index' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'test:about' %}"> About </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'test:do' %}"> What we do </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'test:portfolio' %}"> Portfolio </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'test:contact' %}">Contact us</a>
+                </li>
+              </ul>
+              <div class="user_option">
+                <a href="">
+                  <img src="/media/images/user.png" alt="">
+                </a>
+                <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
+                  <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!-- end header section -->
+  </div>
+
+  <!-- contact section -->
+
+  <section class="contact_section layout_padding">
+    <div class="container">
+
+        <div class="heading_container">
+            <h2>
+            경제지표란?
+            </h2>
+        </div>
+        
+        <section calss="who_section layout_padding">
+            <div class="container">
+                <div class="detail-box">
+                    
+                    <h4>경제지표란</h4>
+                    <p>한 나라의 경제 상태를 수치나 통계로 나타낸 정보를 말해요.
+                       쉽게 말해서, 경제가 얼마나 건강한지 또는 어디로 가고 있는지 보여주는 "체온계"나 "나침반"같은 역할을 합니다.</p>
+                
+                    <h4>왜 중요할까요?</h4>
+                    <h5>1. 경제 상황의 이해</h5>
+                    <p>경제 지표를 보면 지금 경제가 잘 돌아가고 있는지, 아니면 어려움을 겪고 있는지를 알 수 있어요.</p>
+
+                    <h5>2. 정책 결정의 기준</h5>
+                    <p>정부나 중앙은행은 경제지표를 보고 금리를 올릴지, 내릴지, 아니면 다른 정책을 쓸지 결정합니다.</p>
+
+                    <h5>3. 투자와 비즈니스 전력에 활용</h5>
+                    <p>투자자나 기업들은 경제지표를 분석해 미래를 예측하고, 투자 전략을 세우거나 사업 방향을 정합니다.</p>
+
+                    <h4>요약하자면</h4>
+                    <span>경제지표는 경제의 건강 상태를 측정하는 도구입니다.</span>
+                    <p>이 지표들은 모두 경제의 현재, 과거, 미래를 이해하고, 더 나은 결정을 내리는 데 중요한 역할을 합니다.</p>
+                </div>
+            </div>
+        </section>
+    <div class = "heading_container">
+      <h2>상관관계</h2>
+      <div id="full_corr_graph">
+          {{ full_corr_graph|safe }}
+      </div>
+    </div>
+
+    <div class="heading_container">
+        <h2>
+            경제지표별 관계
+        </h2>
+    </div>
+    <div class="hero_area">
+    <!-- 반감기 종가 그래프로 활용 -->
+    <!-- slider section -->
+        <section class=" slider_section position-relative">
+            <div class="container">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="detail-box">
+                                        <div>
+                                            <h2> 주식시장 </h2>                                       
+                                              <div id="stock_graph">
+                                                  {{ stock_graph|safe }}
+                                              </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col">
+                                <div class="detail-box">
+                                    <div>
+                                        <h2> 경제성장 </h2>
+                                        <div id="economy_graph">
+                                          {{ economy_graph|safe }}
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col">
+                                <div class="detail-box">
+                                    <div>
+                                        <h2> 물가 </h2>
+                                        <div id="price_graph">
+                                          {{ price_graph|safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col">
+                                <div class="detail-box">
+                                    <div>
+                                        <h2> 통화 정책 </h2>
+                                        <div id="monetary_graph">
+                                          {{ monetary_graph|safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col">
+                                <div class="detail-box">
+                                    <div>
+                                        <h2> 대체 자산 </h2>
+                                        <div id="asset_graph">
+                                          {{ asset_graph|safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+        </section>
+    <!-- end slider section -->
+    </div>
+
+    <div class="container">
+      <p>
+        초기에는 경제 지표와 별개로 움직이는 디지털 자산이었지만, 2차와 3차 반감기 동안 주식 시장, 물가(CPI, PPI), 금리, 통화량 등과 밀접하게 연관되며 위험자산으로 평가되었습니다.
+        특히 팬데믹 시기에는 초저금리와 대규모 유동성 공급이 비트코인의 가치 상승에 중요한 역할을 했습니다.
+      </p>
+      <p>
+        4차 반감기에서는 주요 경제 지표와의 연관성이 약화되며, 글로벌 투자 심리 및 경제 환경의 변화가 더 중요한 변수로 작용하고 있습니다.
+        이 변화가 장기적으로 지속될지는 앞으로의 경제 환경과 투자 심리에 달려 있습니다.
+      </p>
+    </div>
+    <section calss="who_section layout_padding">
+            <div class="container">
+            <!-- 토글 버튼 -->
+            <button onclick="toggleVisibility('compoundInterest')">경제지표별 관계</button>
+            <!-- 토글버튼 클릭시 나오는 내용 -->
+            <div id="compoundInterest" style="display: none;">
+                <div class="detail-box">
+                  <h4>1. 주식시장(wilshire 5000, buffet 지수)</h4>
+                  <span>비트코인은 과거 주식 시장과 별개로 움직였지만 2차 반감기 이후부터 위험 자산으로 간주죄며 주식 시장과의 연관성이 강해졌습니다.</span>
+                  <p>4차 반감기에서는 주식 시장과의 관계보다는 글로벌 경제 상황과 투자 심리에 더 민감하게 반응하고 있습니다.</p>
+
+                  <ul>
+                    <li>1차반감기</li>
+                    <p>비트코인은 디지털 자산으로 자리 잡기 시작하며 주식 시장과 약간의 상관성을 보였습니다.</p>
+
+                    <li>2차 반감기</li>
+                    <p>비트코인은 위험 자산으로 평가되며, 주식 시장과의 연관성이 강해졌습니다.</p>
+
+                    <li>3차 반감기</li>
+                    <p>코로나로 인해 대규모 유동성이 공급되면서, 주식 시장과 비트코인의 연동성이 최고조에 달했습니다.</p>
+                    
+                    <li>4차 반감기</li>
+                    <p>주식 시장과의 관계가 다소 약화되고, 글로벌 경제 불확실성 및 투자 심리에 더 민감하게 움직이는 모습이 관찰됩니다.</p>
+                  </ul>
+
+                  <h4>2. 경제 성장(GDP, 경제성장률)</h4>
+                  <span>비트코인은 경제 상황이 좋을수록 가치가 상승하는 경향이 있었습니다.</span>
+                  <p>4차 반감기에서는 경제 성장률과의 연관성이 약화되며 독립적인 움직임을 보이기 시작했습니다.</p>
+
+                  <ul>
+                    <li>1차반감기</li>
+                    <p>경제와 별개로 독립적으로 움직이며 디지털 자산으로 자리 잡기 시작했습니다.</p>
+
+                    <li>2차 반감기</li>
+                    <p>안정된 경제 성장과 함께 비트코인의 가치도 상승하며 경제와 연관성이 높아졌습니다.</p>
+
+                    <li>3차 반감기</li>
+                    <p>팬데믹 이후 경제 회복과 함께 비트코인 가격도 상승했지만, 경제 성장과의 관계는 강하다고 보이지는 않았습니다.</p>
+                    
+                    <li>4차 반감기</li>
+                    <p>경제 성장률과의 관계는 약화된 반면, 글로별 경제적 불확실성에 따라 민감하게 반응하는 경향이 나타납니다.</p>
+                  </ul>
+
+                  <h4>3. 물가(소비자물가지수, 생산자물가지수, 물가 상승률)</h4>
+                  <span>
+                    과거에는 인플레이션(물가 상승)이 비트코인의 가치 상승에 긍정적인 영향을 미쳤으나, 4차 반감기에서는 물가 지표와의 연관성이 약화되고 있습니다.
+                  </span>
+                  <p>이는 비트코인이 점점 새로운 움직임을 보이며, 물가와 독립적으로 움직일 가능성을 보여줍니다.</p>
+
+                  <ul>
+                    <li>1차반감기</li>
+                    <p>비트코인은 물가 지표와 일부 연관성을 보였으나, 독립적인 디지털 자산으로 주목 받았습니다.</p>
+
+                    <li>2차 반감기</li>
+                    <p>인플레이션에 대한 헤지 수단으로 주목받았으며, 소비자물가지수와 생산자물가지수가 상승할 때 비트코인 가격도 상승했습니다.</p>
+
+                    <li>3차 반감기</li>
+                    <p>팬데믹 시기, 인플레이션(물가 상승)이 심화되면서 비트코인이 가치 저장 수단으로 자리 잡았습니다.</p>
+                    
+                    <li>4차 반감기</li>
+                    <p> 소비자물가지수와는 양의 관계를 유지했으나, 생산자물가지수와는 음의 관계를 보이며 물가 지표와의 연관성이 약화되었습니다.</p>
+                  </ul>
+
+                  <h4>4. 통화 정책(기준금리, 통화량, 환율)</h4>
+                  <span>
+                    비트코인은 금리가 낮아지고 통화량이 늘어나며 달러 약세(환율 하락)가 나타날 때, 비트코인의 투자 매력도가 급격히 증가했지만, 4차 반감기에서는 금리와 통화량의 연관성이 약화된 반면, 환율과의 관계는 강해졌습니다.
+                  </span>
+                  <p>이는 비트코인이 기존 통화 정책의 영향을 덜 받는 자산으로 자리 잡아가고 있음을 보여줍니다.</p>
+
+                  <ul>
+                    <li>1차반감기</li>
+                    <p>통화 정책과의 연관성이 뚜렷하지 않았습니다. 비트코인은 여전히 새로운 디지털 자산으로 자리잡는 초기 단계였습니다.</p>
+
+                    <li>2차 반감기</li>
+                    <p>금리가 낮아지고 통화량이 늘어나며, 달러 약세(환율 하락)가 나타나는 환경에서 비트코인의 가치가 상승하기 시작했습니다.</p>
+
+                    <li>3차 반감기</li>
+                    <p>팬데믹 시기에 초저금리와 대규모 통화량 증가, 그리고 달러 약세(환율 하락)가 동시에 발생하며 비트코인의 가격이 폭발적으로 상승했습니다.</p>
+                    
+                    <li>4차 반감기</li>
+                    <span>기준금리와 통화량의 연관성이 약화된 반면, 환율과의 관계는 강화되어 비트코인이 달러 가치 변화에 민감하게 반응하고 있습니다.</span>   
+                  </ul>
+
+                  <h4>5. 대체 자산(금 가격, 채권)</h4>
+                  <span>비트코인은 금과 유사한 대체 자산으로 경제적 불확실성 속에서 주목받았으며, 채권과는 반대되는 움직임을 보였습니다.</span>
+                  <p>최근 4차 반감기에서는 금과 채권과의 관계가 약화되며, 기존 자산들과는 다른 독립적인 투자 패턴을 보여주고 있습니다.</p>
+
+                  <ul>
+                    <li>1차반감기</li>
+                    <p>금이나 채권과 뚜렷한 연관성을 보이지 않았습니다. 새로운 디지털 자산으로 자리 잡기 시작했습니다.</p>
+
+                    <li>2차 반감기</li>
+                    <p>금과 유사한 움직임을 보이기 시작했으며, 금리가 낮아질 때 채권보다 더 선호되는 대체 자산으로 평가받았습니다.</p>
+
+                    <li>3차 반감기</li>
+                    <p>팬데믹 시기에 금과 비트코인이 모두 안전 자산으로 주목받으며 가격이 상승했습니다. 동시에 채권과는 반대되는 움직임을 보였습니다.</p>
+                    
+                    <li>4차 반감기</li>
+                    <span>금과 채권과의 관계가 약화되며, 비트코인이 글로벌 투자 환경에 영향을 받는 독립적인 투자 자산으로 변화하고 있는 모습이 관찰됩니다.</span>
+                  </ul>
+
+                </div>
+            </div>
+            <!--토글 종료-->
+        </section>
+</section>
+<hr>
+
+  <!-- info section -->
+  <section class="info_section ">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="info_contact">
+            <h5>
+              About Shop
+            </h5>
+            <div>
+              <div class="img-box">
+                <img src="/media/images/location-white.png" width="18px" alt="">
+              </div>
+              <p>
+                Address
+              </p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="/media/images/telephone-white.png" width="12px" alt="">
+              </div>
+              <p>
+                +01 1234567890
+              </p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="/media/images/envelope-white.png" width="18px" alt="">
+              </div>
+              <p>
+                demo@gmail.com
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_info">
+            <h5>
+              Informations
+            </h5>
+            <p>
+              ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="info_insta">
+            <h5>
+              Instagram
+            </h5>
+            <div class="insta_container">
+              <div>
+                <a href="">
+                  <div class="insta-box b-1">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+                <a href="">
+                  <div class="insta-box b-2">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+              </div>
+
+              <div>
+                <a href="">
+                  <div class="insta-box b-3">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+                <a href="">
+                  <div class="insta-box b-4">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+              </div>
+              <div>
+                <a href="">
+                  <div class="insta-box b-3">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+                <a href="">
+                  <div class="insta-box b-4">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_form ">
+            <h5>
+              Newsletter
+            </h5>
+            <form action="">
+              <input type="email" placeholder="Enter your email">
+              <button>
+                Subscribe
+              </button>
+            </form>
+            <div class="social_box">
+              <a href="">
+                <img src="/media/images/fb.png" alt="">
+              </a>
+              <a href="">
+                <img src="/media/images/twitter.png" alt="">
+              </a>
+              <a href="">
+                <img src="/media/images/linkedin.png" alt="">
+              </a>
+              <a href="">
+                <img src="/media/images/youtube.png" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- end info_section -->
+
+
+  <!-- footer section -->
+  <section class="container-fluid footer_section">
+    <p>
+      &copy; 2020 All Rights Reserved By
+      <a href="https://html.design/">Free Html Templates</a>
+    </p>
+  </section>
+  <!-- footer section -->
+
+  <script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+  </script>
+  <!-- owl carousel script 
+    -->
+  <script type="text/javascript">
+    $(".owl-carousel").owlCarousel({
+      loop: true,
+      margin: 0,
+      navText: [],
+      center: true,
+      autoplay: true,
+      autoplayHoverPause: true,
+      responsive: {
+        0: {
+          items: 1
+        },
+        1000: {
+          items: 3
+        }
+      }
+    });
+  </script>
+  <!-- end owl carousel script -->
+
+</body>
+
+</html>
