@@ -270,6 +270,8 @@ def halving_pattern(request):
 def detail_issue(request):
     return render(request, "detail_issue.html")
 
+def technical_analysis(request):
+    return render(request, "detail_technical_analysis.html")
 
 # ==================
 # ====== main ======
@@ -303,8 +305,8 @@ def index(request):
     news2.loc[(news2["상승"] == 1) & (news2["분류"] != "negative"), "분류"] = "positive"
 
     news2_counts = news2["분류"].value_counts()
-    ratio = news2_counts.values
-    labels = news2_counts.index
+    ratio = news2_counts.loc[["neutral", "positive", "negative"]].values
+    labels = news2_counts.loc[["neutral", "positive", "negative"]].index
     explode = [0.05, 0.05, 0.05]
     plt.figure(figsize=(4, 3))
     plt.pie(
