@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>Esigned</title>
+
+  <!-- slider stylesheet -->
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:400,700&display=swap" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="/static/css/style.css" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="/static/css/responsive.css" rel="stylesheet" />
+  
+  <!-- 폰트 적용 추가 -->
+  <style>
+    @font-face {
+        font-family: 'S-CoreDream-3Light';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+    body {
+        font-family: 'S-CoreDream-3Light';
+    }
+
+    .nav {
+        display: flex;
+        justify-content: center;
+        background-color: #699eff;
+        padding: 10px;
+    }
+    .nav button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: white;
+        color: #001336;
+    }
+    .nav button:hover {
+        background-color: #337bff;
+        color: white;
+    }
+    .content {
+        display: none;
+        padding: 20px;
+    }
+    .content.active {
+        display: block;
+    }
+  </style>
+    
+<!-- 토글 버튼 추가 -->
+    <script>
+        function toggleVisibility(id) {
+            const element = document.getElementById(id);
+            element.style.display = element.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</head>
+
+<body class="sub_page">
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
+          <a class="navbar-brand" href="index.html">
+            <span>
+              Esigned
+            </span>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+              <ul class="navbar-nav  ">
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'test:index' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'test:about' %}"> About </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'test:do' %}"> What we do </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'test:portfolio' %}"> Portfolio </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'test:contact' %}">Contact us</a>
+                </li>
+              </ul>
+              <div class="user_option">
+                <a href="">
+                  <img src="/media/images/user.png" alt="">
+                </a>
+                <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
+                  <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!-- end header section -->
+  </div>
+
+  <!-- contact section -->
+
+  <div class="nav">
+    <button onclick="showContent('page1')">분봉</button>
+    <button onclick="showContent('page2')">일봉</button>
+  </div>
+  <div id="page2" class="content">
+    <section class="contact_section layout_padding">
+      <div class="container">
+
+          <div class="heading_container">
+              <h2>
+              비트코인과 기술적 지표
+              </h2>
+          </div>
+          
+          <section calss="who_section layout_padding">
+              <div class="container">
+                  <div class="detail-box">
+                      
+                      <h4>사용데이터</h4>
+                      <p>UpBit 에서 2018-04-12 ~ 2024-12-16까지 총 2441일의 시가, 종가, 고가, 저가, 거래량 데이터를 사용했습니다.</p>
+                  
+                      <h4 style="padding-top: 30px;">기술적 지표</h4>
+                      <ul>
+                        <li>RSI : 주가의 강도와 추세를 측정하여 과매수·과매도 상태를 파악하는 지표입니다.</li>
+                        <li>이동평균선 : 일정 기간의 평균 가격을 나타내며 추세를 확인하는 데 사용힙니다.</li>
+                        <li>볼린저밴드 : 주가의 변동성을 기준으로 과매수·과매도와 추세 돌파 가능성을 분석하는 지표입니다.</li>
+                      </ul>
+                  </div>
+              </div>
+          </section>
+        <hr>
+          <div class="heading_container">
+            <h2>
+            골든크로스, 데드크로스
+            </h2>
+            <ul>
+              <li>골든크로스 : 단기 이동평균선이 장기 이동평균선을 아래에서 위로 교차하는 현상입니다.</li>
+              <li>데드크로스 : 장기 이동평균선이 단기 이동평균선을 위에서 아래로 교차하는 현상입니다.</li>
+            </ul>
+          </div>
+          <img src="/media/images/detail_technical_analysis/gold_dead.png" style="width: 100%;">
+      <div class="hero_area">
+      <!-- 반감기 종가 그래프로 활용 -->
+      <!-- slider section -->
+          <section class=" slider_section position-relative">
+              <div class="container">
+                  <div id="carouselExampleIndicators1" class="carousel slide" data-ride="false">
+                      <ol class="carousel-indicators">
+                      <li data-target="#carouselExampleIndicators1" data-slide-to="0" class="active"></li>
+                      <li data-target="#carouselExampleIndicators1" data-slide-to="1"></li>
+                      </ol>
+                      <div class="carousel-inner">
+                          <div class="carousel-item active">
+                              <div class="row">
+                                  <div class="col">
+                                      <div class="detail-box">
+                                          <div style="margin-top: 70px;">                                     
+                                              <img src="/media/images/detail_technical_analysis/gold_dead_mean_revenue.png" alt="0차 반감기 ">
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="carousel-item">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="detail-box">
+                                      <div style="margin-top: 70px;">                                     
+                                        <img src="/media/images/detail_technical_analysis/gold_dead_sum_revenue.png" alt="0차 반감기 ">
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>    
+              </div>
+          </section>
+      <!-- end slider section -->
+      </div>
+      <h4 style="margin-top: 50px;">평균수익률(%)</h4>
+      <ul>
+        <li>일 평균수익률 <b>0.1662%</b></li>
+        <li>골든크로스 MA20-MA60 일 평균수익률 <b>0.3220%</b> -> 일 평균 수익률 <b style="color: red;">+0.1558%</b></li>
+        <li>데드크로스 MA20-MA60 일 평균수익률 <b>-0.0026%</b> -> 일 평균 수익률 <b style="color: blue;">-0.1688%</b></li>
+        <li>데드크로스와 골드크로스의 1일 수익률 차이 <b>0.3246%</b></li>
+      </ul>
+      <h4 style="margin-top: 50px;">누적수익률(배율)</h4>
+      <ul>
+        <li>평균 누적수익률 <b>18.88배</b></li>
+        <li>골든크로스 MA5-MA20 누적수익률 <b>36.72배</b> -> 평균 누적수익률 <b style="color: red;">+17.84배</b></li>
+        <li>데드크로스 MA5-MA20 누적수익률 <b>0.55배</b> -> 평균 누적수익률 <b style="color: blue;">-18.33배</b></li>
+        <li>데드크로스와 골드크로스의 누적수익률 차이 <b>36.17배</b></li>
+      </ul>
+      <h4 style="margin-top: 50px;">누적 수익</h4>
+      <ul>
+        <li>2018-04-12기준 비트코인 8,121,000원 2024-12-16까지 보유 시 <b style="color: rgb(255, 115, 0);">153,384,480</b></li>
+        <li>MA5-MA20 골든크로스 기간만 보유 시 <b style="color: red;">298,203,120원</b></li>
+        <li>MA5-MA20 데드크로스 기간만 보유 시 <b style="color: blue;">4,466,550원</b></li>
+      </ul>
+
+
+    <!-- end contact section -->
+      <hr style="margin-top: 100px;">
+      <div class="heading_container">
+          <h2>
+            RSI
+          </h2>
+          <ul>
+            <li>과매수 : RSI 값이 70 이상일 때, 주가가 과도하게 상승하여 가격이 고평가되었음을 나타냅니다.</li>
+            <li>과매도 : RSI 값이 30 이하일 때, 주가가 과도하게 하락하여 가격이 저평가되었음을 나타냅니다.</li>
+          </ul>
+      </div>
+      <img src="/media/images/detail_technical_analysis/ris.png" style="width: 100%;">
+      <div class="hero_area">
+        <!-- 반감기 종가 그래프로 활용 -->
+        <!-- slider section -->
+            <section class=" slider_section position-relative">
+                <div class="container">
+                    <div id="carouselExampleIndicators2" class="carousel slide" data-ride="false">
+                        <ol class="carousel-indicators">
+                        <li data-target="#carouselExampleIndicators2" data-slide-to="0" class="active"></li>
+                        <li data-target="#carouselExampleIndicators2" data-slide-to="1"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="detail-box">
+                                          <h2 style="margin-top: 50px;">비트코인</h2>
+                                          <div style="margin-top: 20px;">                                     
+                                            <img src="/media/images/detail_technical_analysis/rsi_revenue.png" style="width: 90%;">
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                              <div class="row">
+                                  <div class="col">
+                                      <div class="detail-box">
+                                        <h2 style="margin-top: 50px;">S&P500</h2>
+                                        <div style="margin-top: 20px;">                                     
+                                          <img src="/media/images/detail_technical_analysis/s&p500_rsi.png" alt="0차 반감기 " style="width: 90%;">
+                                      </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                    </div>    
+                </div>
+            </section>
+        <!-- end slider section -->
+        </div>
+        <p>주식 시장에서는 RSI가 50 이하일 때 더 높은 수익률을 기록하는 경향이 있습니다.  
+          반면, 코인 시장에서는 RSI가 50 이상일 때 더 높은 수익률을 보이는 특징이 있습니다.
+        </p>
+      <h4 style="margin-top: 50px;">평균수익률(%)</h4>
+      <ul>
+        <li>일 평균 수익률 <b>0.1662%</b></li>
+        <li>RSI > 50 일 평균 수익률 <b>0.3863%</b> -> 일 평균 수익률 <b style="color: red;">+0.2201%</b></li>
+        <li>RSI < 50 일 평균 수익률 <b>-0.0827%</b> -> 일 평균 수익률 <b style="color: blue;">-0.2489%</b></li>
+        <li>RSI > 50, RSI < 50 일 평균 수익률 차이 <b>0.4690%</b></li>
+      </ul>
+      <h4 style="margin-top: 50px;">누적수익률(배율)</h4>
+      <ul>
+        <li>평균 누적수익률 <b>18.88배</b></li>
+        <li>골든크로스 MA5-MA20 누적수익률 <b>85.95배</b> -> 평균 누적수익률 <b style="color: red;">+67.07배</b></li>
+        <li>데드크로스 MA5-MA20 누적수익률 <b>0.21배</b> -> 평균 누적수익률 <b style="color: blue;">-18.67배</b></li>
+        <li>데드크로스와 골드크로스의 누적수익률 차이 <b>85.74배</b></li>
+      </ul>
+      <h4 style="margin-top: 50px;">누적 수익</h4>
+      <ul>
+        <li>2018-04-12기준 비트코인 8,121,000원 2024-12-16까지 보유 시 <b style="color: rgb(255, 115, 0);">150,969,390원</b></li>
+        <li>MA5-MA20 골든크로스 기간만 보유 시 <b style="color: red;">697,999,950원</b></li>
+        <li>MA5-MA20 데드크로스 기간만 보유 시 <b style="color: blue;">1,705,410원</b></li>
+      </ul>
+      <hr style="margin-top: 100px;">
+      <div class="heading_container">
+          <h2>
+            볼린저밴드
+          </h2>
+          <ul>
+            <li>upper : 주가가 상단 밴드를 넘는 경우, 과매수 상태일 가능성이 있으며,단기적으로 상승세가 과도하다는 신호로, 가격이 조정을 받을 가능성이 높습니다. </li>
+            <li>lower : 주가가 하단 밴드 아래로 떨어지는 경우, 과매도 상태일 가능성이 있으며, 단기적으로 하락세가 과도하다는 신호로, 가격이 반등할 가능성이 높습니다.</li>
+          </ul>
+      </div>
+      <div class="hero_area">
+        <!-- 반감기 종가 그래프로 활용 -->
+        <!-- slider section -->
+            <section class=" slider_section position-relative">
+                <div class="container">
+                    <div id="carouselExampleIndicators3" class="carousel slide" data-ride="false">
+                        <ol class="carousel-indicators">
+                        <li data-target="#carouselExampleIndicators3" data-slide-to="0" class="active"></li>
+                        <li data-target="#carouselExampleIndicators3" data-slide-to="1"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="detail-box">
+                                          <h2 style="margin-top: 50px;">비트코인</h2>
+                                          <div style="margin-top: 20px;">                                     
+                                            <img src="/media/images/detail_technical_analysis/btc_band.png" style="width: 90%;">
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                              <div class="row">
+                                  <div class="col">
+                                      <div class="detail-box">
+                                        <h2 style="margin-top: 50px;">S&P500</h2>
+                                        <div style="margin-top: 20px;">                                     
+                                          <img src="/media/images/detail_technical_analysis/s&p500_band.png" alt="0차 반감기 " style="width: 90%;">
+                                      </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                    </div>    
+                </div>
+            </section>
+        <!-- end slider section -->
+        </div>
+        <p>주식 시장에서는 일반적으로 주가가 볼린저밴드의 상단이나 하단을 돌파하면 추세가 반대 방향으로 전환되는 경우가 많습니다.  
+          하지만 코인 시장에서는 주가가 볼린저밴드의 상단이나 하단을 돌파한 뒤에도 기존 추세가 계속 유지되는 경우가 많은 모습을 보였습니다.
+        </p>
+        <h4 style="margin-top: 50px;">평균수익률(%)</h4>
+        <ul>
+          <li>일 평균 수익률 <b>0.1662%</b></li>
+          <li>upper 일 평균 수익률 <b>0.8826%</b> -> 일 평균 수익률 <b style="color: red;">+0.7164%</b></li>
+          <li>lower 일 평균 수익률 <b>-0.5000%</b> -> 일 평균 수익률 <b style="color: blue;">-0.6662%</b></li>
+          <li>upper, lower 일 평균 수익률 차이 <b>1.3826%</b></li>
+        </ul>
+
+        <div class="hero_area" style="margin-top: 50px;">
+          <!-- 반감기 종가 그래프로 활용 -->
+          <!-- slider section -->
+              <section class=" slider_section position-relative">
+                  <div class="container">
+                      <div id="carouselExampleIndicators4" class="carousel slide" data-ride="false">
+                          <ol class="carousel-indicators">
+                          <li data-target="#carouselExampleIndicators4" data-slide-to="0" class="active"></li>
+                          <li data-target="#carouselExampleIndicators4" data-slide-to="1"></li>
+                          </ol>
+                          <div class="carousel-inner">
+                              <div class="carousel-item active">
+                                  <div class="row">
+                                      <div class="col">
+                                          <div class="detail-box">
+                                            <h2 style="margin-top: 50px;">비트코인</h2>
+                                            <div style="margin-top: 20px;">                                     
+                                              <img src="/media/images/detail_technical_analysis/btc_candel_chart.png" style="width: 90%;">
+                                            </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="carousel-item">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="detail-box">
+                                          <h2 style="margin-top: 50px;">S&P500</h2>
+                                          <div style="margin-top: 20px;">                                     
+                                            <img src="/media/images/detail_technical_analysis/s&p500_candle_chart.png" alt="0차 반감기 " style="width: 90%;">
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                      </div>    
+                  </div>
+              </section>
+          <!-- end slider section -->
+          </div>
+        </div>
+    </section>
+  </div>
+</div>
+
+<div id="page1" class="content active">
+  <section class="contact_section layout_padding">
+    <div class="container">
+
+        <div class="heading_container">
+          <h1>
+          분봉 데이터 분석
+          </h1>
+        </div>
+
+        <div class="heading_container" style="margin-top: 50px;">
+          <h2>
+          단순 매매법
+          </h2>
+        </div>
+        
+        <section calss="who_section layout_padding">
+            <div class="container">
+                <div class="detail-box">
+                    
+                    <h4>이동평균선(Moving Average, MA)</h4>
+                    <ul>
+                      <li>MA5 & MA10</li>
+                      <ul>
+                        <li>단기 이동 평균으로 빠른 반응을 이끌어 낼 수 있음</li>
+                        <li>가격 변동에 매우 민감해 빠른 거래 신호를 제공</li>
+                        <li>또한, 자주 교차 신호가 발생하여 매매 기회가 자주 포착</li>
+                        <li>높은 변동성으로 잘못된 신호(노이즈)가 발생할 가능성 있음</li>
+                      </ul>
+                      <li>MA10 & MA34</li>
+                      <ul>
+                        <li>10일은 단기 추세를 반영하지만 34일은 중기 추세를 나타냄</li>
+                        <li>따라서 보다 안정적인 신호를 제공</li>
+                        <li>신호의 교차가 덜 하지만 발생 시, 더 강력한 추세를 나타내는 경우 많음</li>
+                        <li>중기 추세를 함께 고려할 수 있어 조금더 장기적인 관점에서 유리</li>
+                      </ul>
+                    </ul>
+
+                    <h4 style="margin-top: 50px;">10월 1~2일 (하향)</h4>
+                    <img src="/media/images/detail_technical_analysis2/10-01_Trading_Signals_MA05-10.png" style="width: 100%;">
+                    <ul style="margin-left: 100px;">
+                      <li>Number of Attempts : 12</li>
+                      <li>Final Balance : 988651.1730049154</li>
+                      <li>1Day Return(%) : -1.13%</li>
+                    </ul>
+   
+                    <img src="/media/images/detail_technical_analysis2/10-01_Trading_Signals_MA10-34.png" style="width: 100%;">
+                    <ul style="margin-left: 100px;">
+                      <li>Number of Attempts : 4</li>
+                      <li>Final Balance : 997238.7975248138</li>
+                      <li>1Day Return(%) : -0.28%</li>
+                    </ul>
+
+                    <h4 style="margin-top: 50px;">11월 1~2일 (횡보)</h4>
+                    <img src="/media/images/detail_technical_analysis2/11-01_Trading_Signals_MA05-10.png" style="width: 100%;">
+                    <ul style="margin-left: 100px;">
+                      <li>Number of Attempts : 12</li>
+                      <li>Final Balance : 1010491.7327050464</li>
+                      <li>1Day Return(%) : 1.05%</li>
+                    </ul>
+             
+                    <img src="/media/images/detail_technical_analysis2/11-01_Trading_Signals_MA10-34.png" style="width: 100%;">
+                    <ul style="margin-left: 100px;">
+                      <li>Number of Attempts : 3</li>
+                      <li>Final Balance : 1004254.4194114702</li>
+                      <li>1Day Return(%) : 0.43%</li>
+                    </ul>
+
+                    <h4 style="margin-top: 50px;">11월 15~16일 (상향)</h4>
+                    <img src="/media/images/detail_technical_analysis2/11-15_Trading_Signals_MA05-10.png" style="width: 100%;">
+                    <ul style="margin-left: 100px;">
+                      <li>Number of Attempts : 20</li>
+                      <li>Final Balance : 994455.6860037496</li>
+                      <li>1Day Return(%) : -0.55%</li>
+                    </ul>
+
+                    <img src="/media/images/detail_technical_analysis2/11-15_Trading_Signals_MA10-34.png" style="width: 100%;">
+                    <ul style="margin-left: 100px;">
+                      <li>Number of Attempts : 4</li>
+                      <li>Final Balance : 1011031.6572135281</li>
+                      <li>1Day Return(%) : 1.1%</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+<hr>
+        <div class="heading_container" style="margin-top: 50px;">
+          <h2>
+            볼린저밴드ver1 매매법
+          </h2>
+        </div>
+        <section calss="who_section layout_padding">
+          <div class="container">
+              <div class="detail-box">
+                  <h4 style="margin-top: 50px;">10월 1~2일 (하향)</h4>
+                  <img src="/media/images/detail_technical_analysis2/10-01_BB_ver1_Trading_Signals_MA05-10.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Transactions: 13</li>
+                    <li>Final Balance : 991636.7152449734</li>
+                    <li>1Day Return(%) : -0.84%</li>
+                  </ul>
+ 
+                  <img src="/media/images/detail_technical_analysis2/10-01_BB_ver1_Trading_Signals_MA10-34.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Attempts : 4</li>
+                    <li>Final Balance : 994117.0147014752</li>
+                    <li>1Day Return(%) : -0.59%</li>
+                  </ul>
+
+                  <h4 style="margin-top: 50px;">11월 1~2일 (횡보)</h4>
+                  <img src="/media/images/detail_technical_analysis2/11-01_BB_ver1_Trading_Signals_MA05-10.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Attempts : 13</li>
+                    <li>Final Balance : 997931.6683623253</li>
+                    <li>1Day Return(%) : -0.21%</li>
+                  </ul>
+           
+                  <img src="/media/images/detail_technical_analysis2/11-01_BB_ver1_Trading_Signals_MA10-34.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Attempts : 3</li>
+                    <li>Final Balance : 997630.3619925018</li>
+                    <li>1Day Return(%) : -0.24%</li>
+                  </ul>
+
+                  <h4 style="margin-top: 50px;">11월 15~16일 (상향)</h4>
+                  <img src="/media/images/detail_technical_analysis2/11-15_BB_ver1_Trading_Signals_MA05-10.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Attempts : 20</li>
+                    <li>Final Balance : 995955.1812469609</li>
+                    <li>1Day Return(%) : -0.4%</li>
+                  </ul>
+
+                  <img src="/media/images/detail_technical_analysis2/11-15_BB_ver1_Trading_Signals_MA10-34.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Attempts : 5</li>
+                    <li>Final Balance : 1004033.057817054</li>
+                    <li>1Day Return(%) : 0.4%</li>
+                  </ul>
+              </div>
+          </div>
+      </section>
+
+<hr>
+        <div class="heading_container" style="margin-top: 50px;">
+          <h2>
+            볼린저밴드ver2 매매법
+          </h2>
+        </div>
+        <section calss="who_section layout_padding">
+          <div class="container">
+              <div class="detail-box">
+                  <h4 style="margin-top: 50px;">10월 1~2일 (하향)</h4>
+                  <img src="/media/images/detail_technical_analysis2/10-01_BB_ver2_Trading_Signals_MA05-10.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Transactions: 12</li>
+                    <li>Final Balance : 988651.1730049154</li>
+                    <li>1Day Return(%) : -1.13%</li>
+                  </ul>
+ 
+                  <img src="/media/images/detail_technical_analysis2/10-01_BB_ver2_Trading_Signals_MA10-34.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Attempts : 4</li>
+                    <li>Final Balance : 997238.7975248138</li>
+                    <li>1Day Return(%) : -0.28%</li>
+                  </ul>
+
+                  <h4 style="margin-top: 50px;">11월 1~2일 (횡보)</h4>
+                  <img src="/media/images/detail_technical_analysis2/11-01_BB_ver2_Trading_Signals_MA05-10.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Transactions: 26</li>
+                    <li>Final Balance : 1000277.5422800262</li>
+                    <li>1Day Return(%) : 0.03%</li>
+                  </ul>
+           
+                  <img src="/media/images/detail_technical_analysis2/11-01_BB_ver2_Trading_Signals_MA10-34.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Transactions: 17</li>
+                    <li>Final Balance : 998747.5946122181</li>
+                    <li>1Day Return(%) : -0.13%</li>
+                  </ul>
+
+                  <h4 style="margin-top: 50px;">11월 15~16일 (상향)</h4>
+                  <img src="/media/images/detail_technical_analysis2/11-15_BB_ver2_Trading_Signals_MA05-10.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Transactions: 35</li>
+                    <li>Final Balance : 995573.430643349</li>
+                    <li>1Day Return(%) : -0.44%</li>
+                  </ul>
+
+                  <img src="/media/images/detail_technical_analysis2/11-15_BB_ver2_Trading_Signals_MA10-34.png" style="width: 100%;">
+                  <ul style="margin-left: 100px;">
+                    <li>Number of Transactions: 20</li>
+                    <li>Final Balance : 1006967.9225147659</li>
+                    <li>1Day Return(%) : 0.7%</li>
+                  </ul>
+              </div>
+          </div>
+      </section>
+  
+</section>
+</div>
+</div>
+  <!-- info section -->
+  <section class="info_section ">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="info_contact">
+            <h5>
+              About Shop
+            </h5>
+            <div>
+              <div class="img-box">
+                <img src="/media/images/location-white.png" width="18px" alt="">
+              </div>
+              <p>
+                Address
+              </p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="/media/images/telephone-white.png" width="12px" alt="">
+              </div>
+              <p>
+                +01 1234567890
+              </p>
+            </div>
+            <div>
+              <div class="img-box">
+                <img src="/media/images/envelope-white.png" width="18px" alt="">
+              </div>
+              <p>
+                demo@gmail.com
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_info">
+            <h5>
+              Informations
+            </h5>
+            <p>
+              ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="info_insta">
+            <h5>
+              Instagram
+            </h5>
+            <div class="insta_container">
+              <div>
+                <a href="">
+                  <div class="insta-box b-1">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+                <a href="">
+                  <div class="insta-box b-2">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+              </div>
+
+              <div>
+                <a href="">
+                  <div class="insta-box b-3">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+                <a href="">
+                  <div class="insta-box b-4">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+              </div>
+              <div>
+                <a href="">
+                  <div class="insta-box b-3">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+                <a href="">
+                  <div class="insta-box b-4">
+                    <img src="/media/images/insta.png" alt="">
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_form ">
+            <h5>
+              Newsletter
+            </h5>
+            <form action="">
+              <input type="email" placeholder="Enter your email">
+              <button>
+                Subscribe
+              </button>
+            </form>
+            <div class="social_box">
+              <a href="">
+                <img src="/media/images/fb.png" alt="">
+              </a>
+              <a href="">
+                <img src="/media/images/twitter.png" alt="">
+              </a>
+              <a href="">
+                <img src="/media/images/linkedin.png" alt="">
+              </a>
+              <a href="">
+                <img src="/media/images/youtube.png" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- end info_section -->
+
+
+  <!-- footer section -->
+  <section class="container-fluid footer_section">
+    <p>
+      &copy; 2020 All Rights Reserved By
+      <a href="https://html.design/">Free Html Templates</a>
+    </p>
+  </section>
+  <!-- footer section -->
+
+  <script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+  </script>
+  <!-- owl carousel script 
+    -->
+  <script type="text/javascript">
+    $(".owl-carousel").owlCarousel({
+      loop: true,
+      margin: 0,
+      navText: [],
+      center: true,
+      autoplay: true,
+      autoplayHoverPause: true,
+      responsive: {
+        0: {
+          items: 1
+        },
+        1000: {
+          items: 3
+        }
+      }
+    });
+    function showContent(pageId) {
+          // 모든 콘텐츠를 숨김
+          const contents = document.querySelectorAll('.content');
+          contents.forEach(content => content.classList.remove('active'));
+          
+          // 선택한 콘텐츠를 표시
+          document.getElementById(pageId).classList.add('active');
+      }
+  </script>
+  <!-- end owl carousel script -->
+
+</body>
+
+</html>

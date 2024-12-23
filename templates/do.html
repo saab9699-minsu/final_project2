@@ -107,7 +107,6 @@
               </h6>
             </a>
           </div>
-
         </div>
         <div class="box arrow-middle arrow_bg">
           <a href="{% url 'test:corr' %}" style="z-index: 99; display: block; position: relative;" >
@@ -119,20 +118,33 @@
             <a href = "{% url 'test:corr' %}">
               <h6>
                 상관관계
+
+        <div class="box arrow-start arrow_bg">
+          <a href="{% url 'test:detail_issue' %}" style="z-index: 99; display: block; position: relative;" >
+            <div class="img-box">              
+              <img src="/media/images/그림3.png" alt=""> 
+            </div>
+          </a>
+          <div class="detail-box">
+            <a href="{% url 'test:detail_issue' %}">
+              <h6>
+                사건 & 긍부정
               </h6>
             </a>
           </div>
         </div>
         <div class="box arrow-middle arrow_bg">
-          <a href="" style="z-index: 99; display: block; position: relative;" >
+          <a href="{% url 'test:technical_analysis' %}" style="z-index: 99; display: block; position: relative;" >
             <div class="img-box">
-              <img src="/media/images/d-3.png" alt="">
+              <img src="/media/images/그림4.png" alt="">
             </div>
           </a>
           <div class="detail-box">
-            <h6>
-              Html5
-            </h6>
+            <a href="{% url 'test:technical_analysis' %}">
+              <h6>
+                기술적 분석
+              </h6>
+            </a>
           </div>
         </div>
         <div class="box arrow-end arrow_bg">
@@ -142,9 +154,11 @@
             </div>
           </a>
           <div class="detail-box">
-            <h6>
-              Css
-            </h6>
+            <a href="">
+              <h6>
+                기술적 분석2
+              </h6>
+            </a>
           </div>
         </div>
         <div class="box ">
