@@ -13,4 +13,5 @@ urlpatterns = [
 
     path("detail_halving_pattern/", views.halving_pattern, name="halving_pattern"),
     path("detail_issue/", views.detail_issue, name="detail_issue"),
+    path("technical_analysis/", views.technical_analysis, name="technical_analysis"),
 ]
