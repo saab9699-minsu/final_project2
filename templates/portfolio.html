@@ -137,11 +137,17 @@
         {% endfor %}
         <p>[남은 자금]</p>
         <p>{{user_leftover}}</p>
+
+        <p>[최대 낙폭(MDD)]</p>
+        <p>{{ mdd_mean }}%</p>
+
+        <p>[사용한 환율(USD)]</p>
+        <p>{{ exchange_rate }}</p>
         </div>
 
         <div>
-        <h2>optimized Portfolio</h2>
-        <p>[최적화된 자산 비중]</p>
+        <h2>fix Portfolio</h2>
+        <p>[고정된 자산 비중]</p>
         {% for key, value in optimized_weights.items %}
           <p>{{ key }} : {{ value }}</p>
         {% endfor %}
@@ -154,13 +160,7 @@
           <p>{{ key }} : {{ value }}</p>
         {% endfor %}
         <p>[남은 자금]</p>
-        <p>{{Funds_remainimg}}</p>
-
-        <p>[최대 낙폭(MDD)]</p>
-        <p>{{ mdd_mean }}%</p>
-
-        <p>[사용한 환율(USD)]</p>
-        <p>{{ exchange_rate }}</p>
+        <p>{{leftover}}</p>
       </div>
 
       <!-- pie 그래프 표시 -->
