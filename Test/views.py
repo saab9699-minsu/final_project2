@@ -414,12 +414,32 @@ def index(request):
 def portfolio(request):
     # 주식, 비트코인 그래프 그리기기
     # 기본값 설정
-    default_start = "2024-01-01"
-    default_end = date.today().isoformat()
+    default_start = "2024-01-01"  # 시작 날짜 기본값
+    default_end = date.today().isoformat()  # 종료날짜 기본값
     default_tick = ["SPY", "GLD", "TLT"]  # 기본 종목
     default_btc = ["BTC-USD"]  # 기본 BTC 심볼
-    default_price = 1000
+    default_price = 5000000
     default_weight = [0.25, 0.25, 0.25, 0.25]
+
+    default_usd = yf.download(default_tick, start=default_start, end=default_end)[
+        "Adj Close"
+    ]
+    default_btc_data = yf.download(default_btc, start=default_start, end=default_end)[
+        "Adj Close"
+    ]
+
+    default_df = (
+        pd.merge(
+            default_btc_data,
+            default_usd,
+            how="outer",
+            left_on=default_btc_data.index,
+            right_on=default_usd.index,
+        )
+        .ffill()
+        .bfill()
+        .set_index("key_0")
+    )
 
     # GET/POST 요청에서 값 가져오기
     start = request.POST.get("start", default_start)
@@ -439,13 +459,19 @@ def portfolio(request):
     tick = [t.strip() for t in tick_raw.split(",")] if tick_raw else default_tick
     btc = [b.strip() for b in btc_raw.split(",")] if btc_raw else default_btc
 
-    # weight 처리
-    weight_raw = request.POST.get("weight", "")  # 쉼표로 구분된 weight 값
-    weight = (
-        [float(w.strip()) for w in weight_raw.split(",")]
-        if weight_raw
-        else default_weight
-    )
+    # 쉼표로 구분된 weight 값
+    weight_raw = request.POST.get("weight", "")
+    try:
+        # 리스트로 변환환
+        weight = (
+            [float(w.strip()) for w in weight_raw.split(",")]
+            if weight_raw
+            else default_weight
+        )
+        if sum(weight) != 1:
+            weight = default_weight
+    except (ValueError, TypeError):
+        weight = default_weight
 
     # 가공된 데이터 구조 생성
     set_data = {"tick": {}, "btc": {}}
@@ -457,7 +483,9 @@ def portfolio(request):
     # btc와 weight 매핑
     for i, b in enumerate(btc):
         btc_index = i + len(tick)  # btc의 weight는 tick 이후의 값으로 매핑
-        set_data["btc"][b] = weight[btc_index] if btc_index < len(weight) else 0.0
+        set_data["btc"][b] = (
+            weight[btc_index] if btc_index < isinstance(weight_raw, str) else 0.0
+        )
 
     # 데이터 가져오기
     try:
@@ -480,7 +508,9 @@ def portfolio(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
 
-    ### 포트폴리오 설정 ###
+    # ==========================
+    # ===== 포트폴리오 설정 =====
+    # ==========================
     # 실시간 환율 가져오기
     exchange_rate_data = yf.download(["USDKRW=X"], period="1d")["Adj Close"].iloc[-1]
     exchange_rate = round(exchange_rate_data.iloc[0], 2)
@@ -531,49 +561,34 @@ def portfolio(request):
                 # 사용한 금액만큼 잔액 차감
                 user_leftover -= user_buy * last_price[i]
 
-    # 최적화 포트폴리오
+    # 고정된 포트폴리오
     # 예상 수익률과 일일 자산 수익률의 연간 공분산 행렬을 계산
-    mu = expected_returns.mean_historical_return(merged_data)
-    S = risk_models.sample_cov(merged_data)
+    mu = expected_returns.mean_historical_return(default_df)
+    S = risk_models.sample_cov(default_df)
     # 최대 샤프 비율 최적화
     ef = EfficientFrontier(mu, S)
 
-    # 최소 및 최대 비중 설정
-    ef.add_constraint(lambda w: w >= 0.05)  # 최소 비중 5%
-    ef.add_constraint(lambda w: w <= 0.7)  # 최대 비중 70%
+    weight_dict = {}
+    for i in default_df:
+        for j in default_weight:
+            weight_dict[i] = j
 
-    # 특정 자산 비중 설정 (예: TLT 최소 10%)
-    ef.add_constraint(lambda w: w[merged_data.columns.get_loc("TLT")] >= 0.1)
+    # 지정한 weught
+    ef.set_weights(weight_dict)
 
-    # 최적화 및 정리
-    weights_sh = ef.max_sharpe()
-    cleaned_weights = ef.clean_weights()
-
-    weights_sh = cleaned_weights  # 최적화된 가중치를 저장
-    clean_weights = np.array([round(weights_sh[key], 2) for key in merged_data.columns])
     # 분산계산
-    clean_weights = np.array(clean_weights)
+    clean_weights = np.array(weight_dict)
 
     # 일간 수익률
-    clean_returns = merged_data.pct_change().dropna()
+    clean_returns = default_df.pct_change().dropna()
     # 누적 수익률
     clean_portfolio_returns = (clean_returns * clean_weights).sum(axis=1)
     clean_cumulative_returns = (1 + clean_portfolio_returns).cumprod()
 
-    # MDD
-    cumulative_max = merged_data.cummax()
-    drawdown = (merged_data / cumulative_max) - 1
-    dd = drawdown.cummin()
-    mdd = -dd.min()
-    mdd_mean = round(mdd.mean(), 2) * 100
-
-    # 포트폴리오 종목 할당 계산
-    last_price = get_latest_prices(merged_data)
-
     allocation = {}
     leftover = change_price
     # 비율에 따라 각 종목에 할당
-    for key, value in weights_sh.items():
+    for key, value in weight_dict.items():
         if key in btc:
             # 암호화폐는 소수점 이하 단위까지 계산
             btc_buy = (change_price * value) / last_price[key]
@@ -586,8 +601,16 @@ def portfolio(request):
             allocation[key] = int(stock_buy)
             # 사용한 금액만큼 잔액 차감
             leftover -= stock_buy * last_price[key]
+
     # 포트폴리오 성과
     port = ef.portfolio_performance(verbose=False)
+
+    # MDD
+    cumulative_max = merged_data.cummax()
+    drawdown = (merged_data / cumulative_max) - 1
+    dd = drawdown.cummin()
+    mdd = -dd.min()
+    mdd_mean = round(mdd.mean() * 100, 2)
 
     ### 시각화 ###
     # line_grahp 생성
@@ -629,7 +652,7 @@ def portfolio(request):
         rows=1,
         cols=2,
         specs=[[{"type": "domain"}, {"type": "domain"}]],
-        subplot_titles=("사용자 설정 자산 비중", "최적화된 자산 비중"),
+        subplot_titles=("사용자 설정 자산 비중", "고정된 자산 비중"),
     )
 
     pie_fig.add_traces(
@@ -638,7 +661,7 @@ def portfolio(request):
         cols=1,
     )
     pie_fig.add_traces(
-        go.Pie(labels=list(weights_sh.keys()), values=list(weights_sh.values())),
+        go.Pie(labels=list(weight_dict.keys()), values=list(weight_dict.values())),
         rows=1,
         cols=2,
     )
@@ -668,7 +691,7 @@ def portfolio(request):
     ]
 
     bar_fig.add_trace(go.Bar(x=col, y=user_y, name="사용자 포트폴리오"))
-    bar_fig.add_trace(go.Bar(x=col, y=optim_y, name="최적화된 포트폴리오"))
+    bar_fig.add_trace(go.Bar(x=col, y=optim_y, name="고정된된 포트폴리오"))
 
     bar_fig.update_layout(title_text="포트폴리오 성과 비교", title_x=0.5)
 
@@ -681,25 +704,25 @@ def portfolio(request):
         # 설정한 포트폴리오
         "set_weight": user_weight,  # 설정한 자산 비중
         "user_allocation": user_allocation,  # 각 항목 별 개별 할당
-        "user_leftover": f"{user_leftover:.2f}",
+        "user_leftover": f"{user_leftover:.2f}",  # 남은자금
         "user_portfolio": {
             "연간 기대 수익률": f"{user_port[0]:.2f}",  # 연간 기대 수익률
             "연간 변동성": f"{user_port[1]:.2f}",  # 연간 변동성
             "샤프 비율": f"{user_port[2]:.2f}",  # 샤프비율
             "누적 수익률": round(cumulative_returns.iloc[-1], 2),  # 누적 수익률
         },
-        # 최적화된 포트폴리오
-        "optimized_weights": weights_sh,  # 자산 비중
+        # 고정된 포트폴리오
+        "optimized_weights": weight_dict,  # 자산 비중
         "Discrete_allocation": allocation,  # 각 항목 별 개별 할당
+        "leftover": f"{leftover:.2f}",  # 남은 자금
         "portfolio_performance": {
             "연간 기대 수익률": f"{port[0]:.2f}",  # 연간 기대 수익률
             "연간 변동성": f"{port[1]:.2f}",  # 연간 변동성
             "샤프 비율": f"{port[2]:.2f}",  # 샤프비율
             "누적 수익률": round(clean_cumulative_returns.iloc[-1], 2),  # 누적 수익률
         },
-        "mdd_mean": mdd_mean,
-        "Funds_remainimg": f"{leftover:.2f}",
-        "exchange_rate": exchange_rate,
+        "mdd_mean": mdd_mean,  # MDD
+        "exchange_rate": exchange_rate,  # 환율
         # 시각화 코드
         "line_graph": line_graph_html,
         "pie_graph": pie_graph_html,
@@ -708,6 +731,7 @@ def portfolio(request):
         "default_end": end,  # 종료 날짜 유지
         "default_tick": ",".join(tick),  # 입력한 종목 유지
         "default_btc": ",".join(btc),  # 입력한 BTC 종목 유지
+        "default_price": price,  # 입력한 초기자금 유지
     }
     return render(request, "portfolio.html", context)
 
