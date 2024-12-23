@@ -199,8 +199,16 @@ def contact(request):
 
     df = df.set_index("구분").T
     df.reset_index(inplace = True)
+    
+
 
     fig_table =  ff.create_table(df)
+
+    fig_table.update_layout(
+    template="plotly_white", 
+    width= 600,    
+    height= 200
+    )
 
     prophet_table = fig_table.to_html(full_html=False)
 
@@ -239,7 +247,8 @@ def halving_pattern(request):
     # 누적, 구간 그래프
     hl_1_3 = detail_df.loc[detail_df["반감기"].isin(["1차", "2차", "3차"])]
     fig_2 = px.line(hl_1_3, x="index", y="log누적수익률", color="구분", facet_col="반감기")
-    fig_2.update_layout(width = 700, height = 300)
+    fig_2.update_xaxes(title="개월")
+    fig_2.update_layout(width = 800, height = 300)  
 
     # HTML 파일로 저장
     log_profit_btc_category = fig_2.to_html(full_html=False)
