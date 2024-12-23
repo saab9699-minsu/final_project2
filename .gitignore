@@ -163,3 +163,4 @@ cython_debug/
 
 # 특정 model 제외 
 .model/
+model/cnn/CNN-20-224-3(0.54).keras

@@ -236,7 +236,8 @@
       <div>
         <h3> 2010~2024 </h3>
         <h3><strong> 반감기 별 수익률 </strong></h3>          
-          <img src="/media/images/halving_patterns/halving_all_log.png" alt="반감기 별 그래프(누적수익률) " width="800" >
+          <!-- <img src="/media/images/halving_patterns/halving_all_log.png" alt="반감기 별 그래프(누적수익률) " width="800" > -->
+          {{ log_profit_btc_graph | safe }}
         <p>반감기 별로 그려본 누적 수익률 그래프입니다.</p>
           <ul>
             <li> 1차~3차 반감기의 수익률을 보면, 상승하는 지점과 하락하는 지점의 시기가 비슷합니다.</li>
@@ -292,7 +293,10 @@
                   <p>반감기는 평균적으로 약 1450일 주기로 찾아옵니다. </p>
                   <p>해당 기간을 다섯개의 구간으로 나누면 비슷한 패턴이 보입니다!</p>
                   <p>(각 반감기 기간 / 5 = 약 9개월)</p>
-                  <img src="/media/images/halving_patterns/halving_log_patten_split.png" alt="반감기 별 그래프(잔차) " width="800" >
+                  <div>
+                    {{ log_profit_btc_category|safe }}
+                  </div>
+  
                   <ul>
                     <li> 상승 : 반감기가 시작된지 얼마 되지 않은 시점으로 가격이 상승하는 특징이 있습니다. </li>
                     <li> 과열 : 과열되는 시기로 급등하는 경향이 있고 고점이 포함되어 하락에 주의해야하는 시점입니다. </li>
