@@ -36,16 +36,95 @@
     <link href="/static/css/style.css" rel="stylesheet" />
     <!-- responsive style -->
     <link href="/static/css/responsive.css" rel="stylesheet" />
+    <style>
+
+    .chart-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+
+    .chart-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .chart-container h3 {
+      font-size: 20px;
+      text-align: center;
+      margin: 0;
+    }
+
+    .prediction-container {
+      margin: 20px 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .prediction-container div {
+      overflow-x: auto;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #ffffff;
+    }
+
+    th, td {
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .highlight {
+      font-size: 18px;
+      font-weight: bold;
+      color: red;
+    }
+
+    .highlight-blue {
+      color: blue;
+    }
+    #github{
+      color: white;
+    }
+    #github:hover {
+      color: gray;
+    }
+    </style>
   </head>
 
   <body class="sub_page">
     <div class="hero_area">
       <!-- header section strats -->
       <header class="header_section">
-        <div class="container-fluid">
+        <div class="container-fluid" style="background-color: #6495ED;">
           <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
-            <a class="navbar-brand" href="index.html">
-              <span> Esigned </span>
+            <a class="navbar-brand" href="{% url 'test:index' %}">
+              <div class="img-box">
+                <img src="/media/images/free-icon-search-bitcoin-15641585.png" width="70px" alt="">
+              </div>
             </a>
             <button
               class="navbar-toggler"
@@ -86,23 +165,10 @@
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'test:contact' %}"
-                      >Contact us</a
+                      >Prediction</a
                     >
                   </li>
                 </ul>
-                <div class="user_option">
-                  <a href="">
-                    <img src="/media/images/user.png" alt="" />
-                  </a>
-                  <form
-                    class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0"
-                  >
-                    <button
-                      class="btn my-2 my-sm-0 nav_search-btn"
-                      type="submit"
-                    ></button>
-                  </form>
-                </div>
               </div>
             </div>
           </nav>
@@ -110,160 +176,132 @@
       </header>
       <!-- end header section -->
     </div>
+    <section class="contact_section layout_padding">
+      <div class="heading_container">
+        <h2>투자 시 주의사항</h2>
+        <ul>
+          <li>
+            본 페이지에 제공된 비트코인 예측 데이터는 딥러닝 모델을 활용한 참고용
+            정보일 뿐, 투자에 대한 권유나 추천이 아닙니다.
+          </li>
+          <li>
+            암호화폐 투자에는 큰 손실 위험이 따를 수 있으며, 최종 투자 판단과 책임은
+            전적으로 사용자 본인에게 있습니다.
+          </li>
+          <li>
+            이 정보를 바탕으로 투자를 결정할 경우, 신중히 검토하시기 바랍니다.
+          </li>
+        </ul>
+      </div>
 
-    <div class="heading_container">
-      <h2>투자 시 주의사항</h2>
-    </div>
-
-    <ul>
-      <li>
-        본 페이지에 제공된 비트코인 예측 데이터는 딥러닝 모델을 활용한 참고용
-        정보일 뿐, 투자에 대한 권유나 추천이 아닙니다.
-      </li>
-      <li>
-        암호화폐 투자에는 큰 손실 위험이 따를 수 있으며, 최종 투자 판단과 책임은
-        전적으로 사용자 본인에게 있습니다.
-      </li>
-      <li>
-        이 정보를 바탕으로 투자를 결정할 경우, 신중히 검토하시기 바랍니다.
-      </li>
-    </ul>
-
-    <!-- contact section -->
-    <div>
-      <img
-        src="data:image/png;base64,{{ cnn_chart }}"
-        alt="cnn 차트"
-        style="border: 5px solid blue"
-      />
-      {% if up_down2 == "상승" %}
-      <h3 style="color: red">{{ up_down2 }}확률 : {{ per }}%</h3>
-      {% else %}
-      <h3 style="color: blue">{{ up_down2 }}확률 : {{ per }}%</h3>
-      {% endif %}
-    </div>
-
-    <!-- 프로펫 -->
+      
+      <!-- contact section -->
+      <div class="container" style="margin-top: 30px;">
+        <hr>
+        <div class="heading_container" style="margin-top: 50px;">
+          <h2>
+            CNN을 통한 비트코인 가격예측
+          </h2>
+        </div>
+        <!-- CNN Chart Section -->
+        <div class="section chart-container" style="margin-top: 20px;">
+          {% if up_down2 == "하락" %}
+          <img
+            src="data:image/png;base64,{{ cnn_chart }}"
+            alt="CNN 차트"
+            style="border: 5px solid blue;"
+          />
+          <h2 class="highlight-blue">{{ up_down2 }} 확률 : {{ per }}%</h2>
+          {% else %}
+          <img
+            src="data:image/png;base64,{{ cnn_chart }}"
+            alt="CNN 차트"
+            style="border: 5px solid red;"
+          />
+          <h2 class="highlight">{{ up_down2 }} 확률 : {{ per }}%</h2>
+          {% endif %}
+          <p style="color: #525252; font-weight: 900;">(다음날 09:00시 종가기준)</p>
+        </div>
+        <hr>
     
-    <h2>비트코인 가격 동향 예측</h2>
+        <!-- Prediction Section -->
+        <div class="section prediction-container">
+          <div class="heading_container">
+            <h2>
+              비트코인 가격 동향 예측
+            </h2>
+          </div>
+          <div>{{ prophet|safe }}</div>
+        </div>
     
-    <div>{{ prophet|safe }} {{ prophet_table|safe }}</div>
-
+        <!-- Prophet Table Section -->
+        <div class="section table-container">
+          <div class="heading_container">
+            <h2>
+              예측 데이터 테이블
+            </h2>
+          </div>
+          <div>{{ prophet_table|safe }}</div>
+        </div>
+      </div>
+    </section>
     <!-- info section -->
     <section class="info_section">
       <div class="container">
         <div class="row">
+  
           <div class="col-md-3">
             <div class="info_contact">
-              <h5>About Shop</h5>
+              <h5>
+                address
+              </h5>
               <div>
                 <div class="img-box">
-                  <img
-                    src="/media/images/location-white.png"
-                    width="18px"
-                    alt=""
-                  />
+                  <img src="/media/images/location-white.png" width="18px" alt="">
                 </div>
-                <p>Address</p>
+                <p>
+                  코리아IT코딩아카데미학원
+                </p>
               </div>
-              <div>
-                <div class="img-box">
-                  <img
-                    src="/media/images/telephone-white.png"
-                    width="12px"
-                    alt=""
-                  />
-                </div>
-                <p>+01 1234567890</p>
-              </div>
-              <div>
-                <div class="img-box">
-                  <img
-                    src="/media/images/envelope-white.png"
-                    width="18px"
-                    alt=""
-                  />
-                </div>
-                <p>demo@gmail.com</p>
+              <div style="padding-left: 33px;">
+                <p>
+                  신촌점 서울 마포구 서강로 136
+                </p>
               </div>
             </div>
           </div>
-          <div class="col-md-3">
+  
+  
+          <div class="col-md-3" style="margin-left: 125px;">
+            <div class="info_contact">
+              <h5>
+                github
+              </h5>
+              <div>
+                <div class="img-box">
+                  <img src="/media/images/icons8-github의-96.png" width="18px" alt="">
+                </div>
+                <a href="https://github.com/saab9699-minsu/final_project2">
+                  <p id="github">
+                    깃 허브 페이지 접속하기 
+                  </p>
+                </a>
+              </div>
+            </div>
+          </div>
+  
+  
+  
+          <div class="col-md-3" style="margin-left: 125px;">
             <div class="info_info">
-              <h5>Informations</h5>
+              <h5>
+                Investment Precautions
+              </h5>
               <p>
-                ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt
+                가상자산의 가치 변동으로 인한 손실 발생 가능성 등을 유념하시어 무리한 투자는 지양 하십시기 바랍니다.
               </p>
             </div>
           </div>
-
-          <div class="col-md-3">
-            <div class="info_insta">
-              <h5>Instagram</h5>
-              <div class="insta_container">
-                <div>
-                  <a href="">
-                    <div class="insta-box b-1">
-                      <img src="/media/images/insta.png" alt="" />
-                    </div>
-                  </a>
-                  <a href="">
-                    <div class="insta-box b-2">
-                      <img src="/media/images/insta.png" alt="" />
-                    </div>
-                  </a>
-                </div>
-
-                <div>
-                  <a href="">
-                    <div class="insta-box b-3">
-                      <img src="/media/images/insta.png" alt="" />
-                    </div>
-                  </a>
-                  <a href="">
-                    <div class="insta-box b-4">
-                      <img src="/media/images/insta.png" alt="" />
-                    </div>
-                  </a>
-                </div>
-                <div>
-                  <a href="">
-                    <div class="insta-box b-3">
-                      <img src="/media/images/insta.png" alt="" />
-                    </div>
-                  </a>
-                  <a href="">
-                    <div class="insta-box b-4">
-                      <img src="/media/images/insta.png" alt="" />
-                    </div>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="info_form">
-              <h5>Newsletter</h5>
-              <form action="">
-                <input type="email" placeholder="Enter your email" />
-                <button>Subscribe</button>
-              </form>
-              <div class="social_box">
-                <a href="">
-                  <img src="/media/images/fb.png" alt="" />
-                </a>
-                <a href="">
-                  <img src="/media/images/twitter.png" alt="" />
-                </a>
-                <a href="">
-                  <img src="/media/images/linkedin.png" alt="" />
-                </a>
-                <a href="">
-                  <img src="/media/images/youtube.png" alt="" />
-                </a>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -274,8 +312,8 @@
     <!-- footer section -->
     <section class="container-fluid footer_section">
       <p>
-        &copy; 2020 All Rights Reserved By
-        <a href="https://html.design/">Free Html Templates</a>
+        &copy; 2024 All Rights Reserved By
+        <a href="#">Bitcoin Analysis Insights</a>
       </p>
     </section>
     <!-- footer section -->

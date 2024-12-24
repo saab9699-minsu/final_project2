@@ -39,6 +39,25 @@
     body {
         font-family: 'S-CoreDream-3Light';
     }
+
+    h4 {
+      margin-top: 30px;
+    }
+
+    div.chart1 {
+      margin: auto;
+      width: 90%;
+    }
+
+    div.detail-box > div > h2 {
+      margin-top: 30px;
+    }
+    #github{
+      color: white;
+    }
+    #github:hover {
+      color: gray;
+    }
     </style>
     
 <!-- 토글 버튼 추가 -->
@@ -54,12 +73,12 @@
   <div class="hero_area">
     <!-- header section strats -->
     <header class="header_section">
-      <div class="container-fluid">
+      <div class="container-fluid" style="background-color: #6495ED;">
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
           <a class="navbar-brand" href="{% url 'test:index' %}">
-            <span>
-              Esigned
-            </span>
+            <div class="img-box">
+              <img src="/media/images/free-icon-search-bitcoin-15641585.png" width="70px" alt="">
+            </div>
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -81,17 +100,9 @@
                   <a class="nav-link" href="{% url 'test:portfolio' %}"> Portfolio </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'test:contact' %}">Contact us</a>
+                  <a class="nav-link" href="{% url 'test:contact' %}">Prediction</a>
                 </li>
               </ul>
-              <div class="user_option">
-                <a href="">
-                  <img src="/media/images/user.png" alt="">
-                </a>
-                <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
-                  <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-                </form>
-              </div>
             </div>
           </div>
         </nav>
@@ -167,10 +178,9 @@
                                     <div class="detail-box">
                                         <div>
                                             <h2> 주식시장 </h2>                                       
-                                              <div id="stock_graph">
+                                              <div id="stock_graph" class="chart1">
                                                   {{ stock_graph|safe }}
                                               </div>
-                                            
                                         </div>
                                     </div>
                                 </div>
@@ -182,10 +192,9 @@
                                 <div class="detail-box">
                                     <div>
                                         <h2> 경제성장 </h2>
-                                        <div id="economy_graph">
+                                        <div id="economy_graph" class="chart1">
                                           {{ economy_graph|safe }}
                                         </div>
-                                        
                                     </div>
                                 </div>
                             </div>
@@ -197,7 +206,7 @@
                                 <div class="detail-box">
                                     <div>
                                         <h2> 물가 </h2>
-                                        <div id="price_graph">
+                                        <div id="price_graph" class="chart1">
                                           {{ price_graph|safe }}
                                         </div>
                                     </div>
@@ -211,7 +220,7 @@
                                 <div class="detail-box">
                                     <div>
                                         <h2> 통화 정책 </h2>
-                                        <div id="monetary_graph">
+                                        <div id="monetary_graph" class="chart1">
                                           {{ monetary_graph|safe }}
                                         </div>
                                     </div>
@@ -225,7 +234,7 @@
                                 <div class="detail-box">
                                     <div>
                                         <h2> 안전 자산 </h2>
-                                        <div id="asset_graph">
+                                        <div id="asset_graph" class="chart1">
                                           {{ asset_graph|safe }}
                                         </div>
                                     </div>
@@ -241,7 +250,7 @@
     <section calss="who_section layout_padding">
             <div class="container">
             <!-- 토글 버튼 -->
-            <button onclick="toggleVisibility('compoundInterest')">경제지표별 관계</button>
+            <button onclick="toggleVisibility('compoundInterest')" style="margin-top: 30px;">경제지표별 관계</button>
             <!-- 토글버튼 클릭시 나오는 내용 -->
             <div id="compoundInterest" style="display: none;">
                 <div class="detail-box">
@@ -322,7 +331,7 @@
                   </ul>
 
                   <h4>5. 안전 자산(금 가격, 채권)</h4>
-                  <span>비트코인은 금과 유사한 안전 자산으로 경제적 불확실성 속에서 주목받았으며, 채권과는 반대되는 움직임을 보였습니다.</span>
+                  <span>비트코인은 금과 유사한 대체 자산으로 경제적 불확실성 속에서 주목받았으며, 채권과는 반대되는 움직임을 보였습니다.</span>
                   <p>최근 4차 반감기에서는 금과 채권과의 관계가 약화되며, 기존 자산들과는 다른 독립적인 투자 패턴을 보여주고 있습니다.</p>
 
                   <ul>
@@ -360,123 +369,62 @@
 <hr>
 
   <!-- info section -->
-  <section class="info_section ">
+  <section class="info_section">
     <div class="container">
       <div class="row">
+
         <div class="col-md-3">
           <div class="info_contact">
             <h5>
-              About Shop
+              address
             </h5>
             <div>
               <div class="img-box">
                 <img src="/media/images/location-white.png" width="18px" alt="">
               </div>
               <p>
-                Address
+                코리아IT코딩아카데미학원
               </p>
             </div>
-            <div>
-              <div class="img-box">
-                <img src="/media/images/telephone-white.png" width="12px" alt="">
-              </div>
+            <div style="padding-left: 33px;">
               <p>
-                +01 1234567890
-              </p>
-            </div>
-            <div>
-              <div class="img-box">
-                <img src="/media/images/envelope-white.png" width="18px" alt="">
-              </div>
-              <p>
-                demo@gmail.com
+                신촌점 서울 마포구 서강로 136
               </p>
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+
+
+        <div class="col-md-3" style="margin-left: 125px;">
+          <div class="info_contact">
+            <h5>
+              github
+            </h5>
+            <div>
+              <div class="img-box">
+                <img src="/media/images/icons8-github의-96.png" width="18px" alt="">
+              </div>
+              <a href="https://github.com/saab9699-minsu/final_project2">
+                <p id="github">
+                  깃 허브 페이지 접속하기 
+                </p>
+              </a>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="col-md-3" style="margin-left: 125px;">
           <div class="info_info">
             <h5>
-              Informations
+              Investment Precautions
             </h5>
             <p>
-              ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+              가상자산의 가치 변동으로 인한 손실 발생 가능성 등을 유념하시어 무리한 투자는 지양 하십시기 바랍니다.
             </p>
           </div>
         </div>
-
-        <div class="col-md-3">
-          <div class="info_insta">
-            <h5>
-              Instagram
-            </h5>
-            <div class="insta_container">
-              <div>
-                <a href="">
-                  <div class="insta-box b-1">
-                    <img src="/media/images/insta.png" alt="">
-                  </div>
-                </a>
-                <a href="">
-                  <div class="insta-box b-2">
-                    <img src="/media/images/insta.png" alt="">
-                  </div>
-                </a>
-              </div>
-
-              <div>
-                <a href="">
-                  <div class="insta-box b-3">
-                    <img src="/media/images/insta.png" alt="">
-                  </div>
-                </a>
-                <a href="">
-                  <div class="insta-box b-4">
-                    <img src="/media/images/insta.png" alt="">
-                  </div>
-                </a>
-              </div>
-              <div>
-                <a href="">
-                  <div class="insta-box b-3">
-                    <img src="/media/images/insta.png" alt="">
-                  </div>
-                </a>
-                <a href="">
-                  <div class="insta-box b-4">
-                    <img src="/media/images/insta.png" alt="">
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="info_form ">
-            <h5>
-              Newsletter
-            </h5>
-            <form action="">
-              <input type="email" placeholder="Enter your email">
-              <button>
-                Subscribe
-              </button>
-            </form>
-            <div class="social_box">
-              <a href="">
-                <img src="/media/images/fb.png" alt="">
-              </a>
-              <a href="">
-                <img src="/media/images/twitter.png" alt="">
-              </a>
-              <a href="">
-                <img src="/media/images/linkedin.png" alt="">
-              </a>
-              <a href="">
-                <img src="/media/images/youtube.png" alt="">
-              </a>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -488,8 +436,8 @@
   <!-- footer section -->
   <section class="container-fluid footer_section">
     <p>
-      &copy; 2020 All Rights Reserved By
-      <a href="https://html.design/">Free Html Templates</a>
+      &copy; 2024 All Rights Reserved By
+      <a href="#">Bitcoin Analysis Insights</a>
     </p>
   </section>
   <!-- footer section -->
