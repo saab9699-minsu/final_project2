@@ -39,6 +39,19 @@
     body {
         font-family: 'S-CoreDream-3Light';
     }
+
+    h4 {
+      margin-top: 30px;
+    }
+
+    div.chart1 {
+      margin: auto;
+      width: 90%;
+    }
+
+    div.detail-box > div > h2 {
+      margin-top: 30px;
+    }
     </style>
     
 <!-- 토글 버튼 추가 -->
@@ -167,10 +180,9 @@
                                     <div class="detail-box">
                                         <div>
                                             <h2> 주식시장 </h2>                                       
-                                              <div id="stock_graph">
+                                              <div id="stock_graph" class="chart1">
                                                   {{ stock_graph|safe }}
                                               </div>
-                                            
                                         </div>
                                     </div>
                                 </div>
@@ -182,10 +194,9 @@
                                 <div class="detail-box">
                                     <div>
                                         <h2> 경제성장 </h2>
-                                        <div id="economy_graph">
+                                        <div id="economy_graph" class="chart1">
                                           {{ economy_graph|safe }}
                                         </div>
-                                        
                                     </div>
                                 </div>
                             </div>
@@ -197,7 +208,7 @@
                                 <div class="detail-box">
                                     <div>
                                         <h2> 물가 </h2>
-                                        <div id="price_graph">
+                                        <div id="price_graph" class="chart1">
                                           {{ price_graph|safe }}
                                         </div>
                                     </div>
@@ -211,7 +222,7 @@
                                 <div class="detail-box">
                                     <div>
                                         <h2> 통화 정책 </h2>
-                                        <div id="monetary_graph">
+                                        <div id="monetary_graph" class="chart1">
                                           {{ monetary_graph|safe }}
                                         </div>
                                     </div>
@@ -225,7 +236,7 @@
                                 <div class="detail-box">
                                     <div>
                                         <h2> 안전 자산 </h2>
-                                        <div id="asset_graph">
+                                        <div id="asset_graph" class="chart1">
                                           {{ asset_graph|safe }}
                                         </div>
                                     </div>
@@ -241,7 +252,7 @@
     <section calss="who_section layout_padding">
             <div class="container">
             <!-- 토글 버튼 -->
-            <button onclick="toggleVisibility('compoundInterest')">경제지표별 관계</button>
+            <button onclick="toggleVisibility('compoundInterest')" style="margin-top: 30px;">경제지표별 관계</button>
             <!-- 토글버튼 클릭시 나오는 내용 -->
             <div id="compoundInterest" style="display: none;">
                 <div class="detail-box">
@@ -322,7 +333,7 @@
                   </ul>
 
                   <h4>5. 안전 자산(금 가격, 채권)</h4>
-                  <span>비트코인은 금과 유사한 안전 자산으로 경제적 불확실성 속에서 주목받았으며, 채권과는 반대되는 움직임을 보였습니다.</span>
+                  <span>비트코인은 금과 유사한 대체 자산으로 경제적 불확실성 속에서 주목받았으며, 채권과는 반대되는 움직임을 보였습니다.</span>
                   <p>최근 4차 반감기에서는 금과 채권과의 관계가 약화되며, 기존 자산들과는 다른 독립적인 투자 패턴을 보여주고 있습니다.</p>
 
                   <ul>
