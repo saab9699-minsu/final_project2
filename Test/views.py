@@ -7,6 +7,9 @@ from datetime import datetime, timedelta
 from django.http import JsonResponse
 from django.conf import settings
 import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+import tensorflow as tf
+
 from sklearn.preprocessing import MinMaxScaler
 
 # plotly 템플릿
@@ -206,7 +209,7 @@ def contact(request):
         
         date_later_li.append(f"{date_later}일 후")
         pred_date_li.append(pred_date)
-        pred_btc_li.append(f"약 {pred_btc}원")
+        pred_btc_li.append(f"약 {pred_btc} $")
 
     df = pd.DataFrame({"구분" : date_later_li, 
                     "예측일" : pred_date_li, 
