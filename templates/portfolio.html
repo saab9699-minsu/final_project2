@@ -27,6 +27,113 @@
   <link href="/static/css/style.css" rel="stylesheet" />
   <!-- responsive style -->
   <link href="/static/css/responsive.css" rel="stylesheet" />
+  <style>
+    #finance-form {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 1000px;
+      padding: 20px;
+      box-sizing: border-box;
+      margin: auto;
+    }
+
+    #finance-form h1 {
+      text-align: center;
+      color: #333333;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 14px;
+      margin-bottom: 5px;
+      display: block;
+      color: #333333;
+    }
+
+    input[type="date"], 
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 4px rgba(0, 123, 255, 0.25);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    h2 {
+      color: #333333;
+      text-align: left;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    td {
+      color: #555555;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #007bff;
+    }
+  </style>
 </head>
 
 <body class="sub_page">
@@ -84,81 +191,141 @@
   <section class="work_section layout_padding">
     <div class="container">
       <div class="heading_container">
-      <h2>Portfolio</h2>
+      <h2 style="margin: auto;">Portfolio</h2>
 
       <!-- 사용자 입력 폼 -->
       <form id="finance-form" method="POST">
+        <h1>포트폴리오 정보 입력</h1>
         {% csrf_token %}
-        <div>
-          <label for="start">시작 날짜</label>
-          <input type="date" id="start" name="start" value="{{ default_start }}">
-          <label for="end">종료 날짜</label>
-          <input type="date" id="end" name="end" value="{{ default_end }}">
-        </div>  
-        
-        <div>
-          <label for="btc">가상화폐 종목</label>
-          <input type="text" id="btc" name="btc" value="{{ default_btc }}">
-
-          <label for="tick">주식 종목</label>
-          <input type="text" id="tick" name="tick" value="{{ default_tick }}">
-        </div>
-
-        <div>
-          <label for="btc">자산 비중</label>
-          <input type="text" id="weight" name="weight" value = "{{ default_weight }}">
-
-          <label for="btc">초기 자금</label>
-          <input type="text" id="price" name="price" value = "{{ default_price }}">
-          
+        <div class="form-grid">
+          <div>
+            <label for="start">시작 날짜</label>
+            <input type="date" id="start" name="start" value="{{ default_start }}">
+          </div>
+          <div>
+            <label for="end">종료 날짜</label>
+            <input type="date" id="end" name="end" value="{{ default_end }}">
+          </div>
+          <div>
+            <label for="btc">가상화폐 종목</label>
+            <input type="text" id="btc" name="btc" value="{{ default_btc }}">
+          </div>
+          <div>
+            <label for="tick">주식 종목</label>
+            <input type="text" id="tick" name="tick" value="{{ default_tick }}">
+          </div>
+          <div>
+            <label for="weight">자산 비중</label>
+            <input type="text" id="weight" name="weight" value="{{ default_weight }}">
+          </div>
+          <div>
+            <label for="price">초기 자금</label>
+            <input type="text" id="price" name="price" value="{{ default_price }}">
+          </div>
         </div>
         <button type="submit">확인</button>
       </form>
 
       <!-- 그래프 표시 -->
-      <div id="line_graph">
+      <div id="line_graph" style="margin: auto;">
           {{ line_graph|safe }}
       </div>
 
       <!-- 포트폴리오 -->
-      <div>
-        <h2>User Portfolio</h2>
-        <p>[설정한 자산 비중]</p>
-        {% for key, value in set_weight.items %}
-          <p>{{ key }} : {{ value }}</p>
-        {% endfor %}
-        <p>[개별 할당]</p>
-        {% for key, value in user_allocation.items %}
-          <p>{{ key }} : {{ value }}</p>
-        {% endfor %}
-        <p>[설정한 포트포리오 성과]</p>
-        {% for key, value in user_portfolio.items %}
-          <p>{{ key }} : {{ value }}</p>
-        {% endfor %}
-        <p>[남은 자금]</p>
-        <p>{{user_leftover}}</p>
-
-        <p>[사용한 환율(USD)]</p>
-        <p>{{ exchange_rate }}</p>
+      <div style="display: flex; width: 100%; margin: auto; gap: 50px;">
+        <div class="section" style="width: 50%;">
+          <h2 style="width: 265px; margin: auto;">User Portfolio</h2>
+          <table style="margin-top: 30px;">
+            <thead>
+              <tr>
+                <th>항목</th>
+                <th>값</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="highlight">설정한 자산 비중</td>
+                <td>
+                  {% for key, value in set_weight.items %}
+                    {{ key }} : {{ value }}<br>
+                  {% endfor %}
+                </td>
+              </tr>
+              <tr>
+                <td class="highlight">개별 할당</td>
+                <td>
+                  {% for key, value in user_allocation.items %}
+                    {{ key }} : {{ value }}<br>
+                  {% endfor %}
+                </td>
+              </tr>
+              <tr>
+                <td class="highlight">설정한 포트폴리오 성과</td>
+                <td>
+                  {% for key, value in user_portfolio.items %}
+                    {{ key }} : {{ value }}<br>
+                  {% endfor %}
+                </td>
+              </tr>
+              <tr>
+                <td class="highlight">남은 자금</td>
+                <td>{{ user_leftover }}</td>
+              </tr>
+              <tr>
+                <td class="highlight">최대 낙폭(MDD)</td>
+                <td>{{ mdd_mean }}%</td>
+              </tr>
+              <tr>
+                <td class="highlight">사용한 환율(USD)</td>
+                <td>{{ exchange_rate }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
-        <div>
-        <h2>fixed Portfolio</h2>
-        <p>[고정된 자산 비중]</p>
-        {% for key, value in optimized_weights.items %}
-          <p>{{ key }} : {{ value }}</p>
-        {% endfor %}
-        <p>[개별 할당]</p>
-        {% for key, value in Discrete_allocation.items %}
-          <p>{{ key }} : {{ value }}</p>
-        {% endfor %}
-        <p>[최적화된 포트포리오 성과]</p>
-        {% for key, value in portfolio_performance.items %}
-          <p>{{ key }} : {{ value }}</p>
-        {% endfor %}
-        <p>[남은 자금]</p>
-        <p>{{leftover}}</p>
+      
+        <div class="section" style="width: 50%;">
+          <h2 style="width: 235px; margin: auto;">Fix Portfolio</h2>
+          <table style="margin-top: 30px;">
+            <thead>
+              <tr>
+                <th>항목</th>
+                <th>값</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="highlight">고정된 자산 비중</td>
+                <td>
+                  {% for key, value in optimized_weights.items %}
+                    {{ key }} : {{ value }}<br>
+                  {% endfor %}
+                </td>
+              </tr>
+              <tr>
+                <td class="highlight">개별 할당</td>
+                <td>
+                  {% for key, value in Discrete_allocation.items %}
+                    {{ key }} : {{ value }}<br>
+                  {% endfor %}
+                </td>
+              </tr>
+              <tr>
+                <td class="highlight">최적화된 포트폴리오 성과</td>
+                <td>
+                  {% for key, value in portfolio_performance.items %}
+                    {{ key }} : {{ value }}<br>
+                  {% endfor %}
+                </td>
+              </tr>
+              <tr>
+                <td class="highlight">남은 자금</td>
+                <td>{{ leftover }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+      
 
       <!-- pie 그래프 표시 -->
       <div id="pie_graph" style="width: 100%;">
