@@ -453,26 +453,6 @@ def portfolio(request):
     default_price = 5000000
     default_weight = [0.25, 0.25, 0.25, 0.25]
 
-    default_usd = yf.download(
-        default_tick, start=default_start, end=default_end, progress=False
-    )["Adj Close"]
-    default_btc_data = yf.download(
-        default_btc, start=default_start, end=default_end, progress=False
-    )["Adj Close"]
-
-    default_df = (
-        pd.merge(
-            default_btc_data,
-            default_usd,
-            how="outer",
-            left_on=default_btc_data.index,
-            right_on=default_usd.index,
-        )
-        .ffill()
-        .bfill()
-        .set_index("key_0")
-    )
-
     # GET/POST 요청에서 값 가져오기
     start = request.POST.get("start", default_start)
     end = request.POST.get("end", default_end)
@@ -537,6 +517,26 @@ def portfolio(request):
         )
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
+
+    default_usd = yf.download(default_tick, start=start, end=end, progress=False)[
+        "Adj Close"
+    ]
+    default_btc_data = yf.download(default_btc, start=start, end=end, progress=False)[
+        "Adj Close"
+    ]
+
+    default_df = (
+        pd.merge(
+            default_btc_data,
+            default_usd,
+            how="outer",
+            left_on=default_btc_data.index,
+            right_on=default_usd.index,
+        )
+        .ffill()
+        .bfill()
+        .set_index("key_0")
+    )
 
     # ==========================
     # ===== 포트폴리오 설정 =====
