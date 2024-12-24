@@ -109,124 +109,141 @@ def contact(request):
     if up_down[0] == 0:
         up_down2 = "하락"
 
-    #오늘 날짜 
+    # 오늘 날짜
     today = pd.to_datetime(datetime.today().strftime("%Y-%m-%d"))
 
-    # 2024년 12월 20일까지 업데이트 된 파일 
-    train = pd.read_csv("./data/web_btc.csv", index_col = 0)
+    # 2024년 12월 20일까지 업데이트 된 파일
+    train = pd.read_csv("./data/web_btc.csv", index_col=0)
     last_updatedate = pd.to_datetime(train["ds"].iloc[-1]) + timedelta(1)
-    
-    # 최근 날짜 데이터 업비트에서 불러오기  
-    btc_df = pyupbit.get_ohlcv("USDT-BTC", interval = "day", count = 10)
+
+    # 최근 날짜 데이터 업비트에서 불러오기
+    btc_df = pyupbit.get_ohlcv("USDT-BTC", interval="day", count=10)
     btc_df = btc_df.reset_index()
     btc_df = btc_df.loc[btc_df["index"] > last_updatedate, ["index", "close"]]
     btc_df.columns = ["ds", "y"]
     btc_df["ds"] = btc_df["ds"].dt.strftime("%Y-%m-%d")
-    
+
     # 최근 자료 결합 및 저장
-    train = pd.concat([train, btc_df], axis = 0).reset_index(drop = True)
+    train = pd.concat([train, btc_df], axis=0).reset_index(drop=True)
     train.to_csv("./data/web_btc.csv")
 
-    # 프로펫 예측 데이터 불러오기 
-    fcst = pd.read_csv("./data/web_fcst.csv", index_col = 0)
+    # 프로펫 예측 데이터 불러오기
+    fcst = pd.read_csv("./data/web_fcst.csv", index_col=0)
 
-# 프로펫 그래프 그리기 
-    #Figure 생성하기
+    # 프로펫 그래프 그리기
+    # Figure 생성하기
     fig = go.Figure()
 
     # 아래쪽 경계 (yhat_lower)
-    fig.add_trace(go.Scatter(
-        x=fcst["ds"],
-        y=fcst["yhat_lower"],
-        fill=None,
-        line_color='rgba(0,100,80,0)',  # 경계선을 숨김
-        name='예측값 범위(하단)',  # 범례 이름
-        showlegend=True
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x=fcst["ds"],
+            y=fcst["yhat_lower"],
+            fill=None,
+            line_color="rgba(0,100,80,0)",  # 경계선을 숨김
+            name="예측값 범위(하단)",  # 범례 이름
+            showlegend=True,
+        )
+    )
 
     # 위쪽 경계 (yhat_upper), 아래쪽과의 영역을 채움
-    fig.add_trace(go.Scatter(
-        x=fcst["ds"],
-        y=fcst["yhat_upper"],
-        fill='tonexty',  # 이전 y 값과의 영역을 채움
-        fillcolor='skyblue',  # 채움 색상
-        line_color='rgba(0,100,80,0)',  # 경계선을 숨김
-        name='예측값 범위(상단)',  # 범례 이름
-        showlegend=True
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x=fcst["ds"],
+            y=fcst["yhat_upper"],
+            fill="tonexty",  # 이전 y 값과의 영역을 채움
+            fillcolor="skyblue",  # 채움 색상
+            line_color="rgba(0,100,80,0)",  # 경계선을 숨김
+            name="예측값 범위(상단)",  # 범례 이름
+            showlegend=True,
+        )
+    )
 
-    # 예측 값 표시 
-    fig.add_trace(go.Scatter(
-        x=fcst["ds"],
-        y=fcst["yhat"],
-        line_color='#1f77b4',
-        name='예측값',  # 범례 이름
-        showlegend=True
-    ))
+    # 예측 값 표시
+    fig.add_trace(
+        go.Scatter(
+            x=fcst["ds"],
+            y=fcst["yhat"],
+            line_color="#1f77b4",
+            name="예측값",  # 범례 이름
+            showlegend=True,
+        )
+    )
 
-    # 실제값 표시 
-    fig.add_trace(go.Scatter(
-        x= train.loc[train["ds"] > "2016-07-09", "ds"],
-        y= train.loc[train["ds"] > "2016-07-09", "y"],
-        name='실제값',  # 범례 이름
-        showlegend=True
-    ))
+    # 실제값 표시
+    fig.add_trace(
+        go.Scatter(
+            x=train.loc[train["ds"] > "2016-07-09", "ds"],
+            y=train.loc[train["ds"] > "2016-07-09", "y"],
+            name="실제값",  # 범례 이름
+            showlegend=True,
+        )
+    )
 
     # 슬라이더 추가 (3개월 단위)
     fig.update_layout(
         xaxis=dict(
-            rangeslider=dict(
-                visible=True  # 슬라이더 활성화
-            ),
+            rangeslider=dict(visible=True),  # 슬라이더 활성화
             # (12개월)1달 이후 포함
-            range=[today - pd.DateOffset(months=11), today + pd.DateOffset(months=1)],  
+            range=[today - pd.DateOffset(months=11), today + pd.DateOffset(months=1)],
         ),
-        template="plotly_white", 
-        width= 1000,    
-        height= 600
+        template="plotly_white",
+        width=1000,
+        height=600,
     )
 
-    fig.update_traces(mode='lines')
+    fig.update_traces(mode="lines")
 
     prophet = fig.to_html(full_html=False)
 
-# 예측 테이블
- # 날짜 업데이트해서 장기 예측
+    # 예측 테이블
+    # 날짜 업데이트해서 장기 예측
     time_li = [30, 60, 90, 180, 365]
     date_later_li = []
     pred_date_li = []
     pred_btc_li = []
 
-    for i in range(len(time_li)) : 
+    for i in range(len(time_li)):
         date_later = time_li[i]
-        pred_date = fcst.loc[fcst["ds"] == (today + timedelta(time_li[i])).strftime("%Y-%m-%d"),"ds"].astype("str").values[0]
-        pred_btc = round(fcst.loc[fcst["ds"] == (today + timedelta(time_li[i])).strftime("%Y-%m-%d"),"yhat"].values[0], -3)
-        
+        pred_date = (
+            fcst.loc[
+                fcst["ds"] == (today + timedelta(time_li[i])).strftime("%Y-%m-%d"), "ds"
+            ]
+            .astype("str")
+            .values[0]
+        )
+        pred_btc = round(
+            fcst.loc[
+                fcst["ds"] == (today + timedelta(time_li[i])).strftime("%Y-%m-%d"),
+                "yhat",
+            ].values[0],
+            -3,
+        )
+
         date_later_li.append(f"{date_later}일 후")
         pred_date_li.append(pred_date)
         pred_btc_li.append(f"약 {pred_btc}원")
 
-    df = pd.DataFrame({"구분" : date_later_li, 
-                    "예측일" : pred_date_li, 
-                    "예측가격" : pred_btc_li})  
+    df = pd.DataFrame(
+        {"구분": date_later_li, "예측일": pred_date_li, "예측가격": pred_btc_li}
+    )
 
     df = df.set_index("구분").T
-    df.reset_index(inplace = True)
+    df.reset_index(inplace=True)
 
-    fig_table =  ff.create_table(df)
+    fig_table = ff.create_table(df)
 
     prophet_table = fig_table.to_html(full_html=False)
 
     context = {
         # CNN 예측 모델
-        "cnn_chart" : cnn_chart,
-        "prediction" : prediction,
-        "per" : per,
-        "up_down2" : up_down2,
-
+        "cnn_chart": cnn_chart,
+        "prediction": prediction,
+        "per": per,
+        "up_down2": up_down2,
         # prophet 예측 모델
-        "prophet" : prophet,
-        "prophet_table" : prophet_table,
+        "prophet": prophet,
+        "prophet_table": prophet_table,
     }
 
     return render(request, "contact.html", context)
@@ -241,27 +258,35 @@ def do(request):
 def halving_pattern(request):
     # 누적수익률
     detail_df = pd.read_csv("./data/log_profit_btc.csv")
-    fig = px.line(detail_df, x="index", y="누적수익률",color="반감기", 
-                labels= dict(index="반감기 이후 개월수"))
+    fig = px.line(
+        detail_df,
+        x="index",
+        y="누적수익률",
+        color="반감기",
+        labels=dict(index="반감기 이후 개월수"),
+    )
 
-    fig.update_layout(width = 700, height = 400, 
-                    title_text = "<b>누적수익률_반감기</b>", title_x = 0.5)
+    fig.update_layout(
+        width=700, height=400, title_text="<b>누적수익률_반감기</b>", title_x=0.5
+    )
 
     log_profit_btc_graph = fig.to_html(full_html=False)
 
     # 누적, 구간 그래프
     hl_1_3 = detail_df.loc[detail_df["반감기"].isin(["1차", "2차", "3차"])]
-    fig_2 = px.line(hl_1_3, x="index", y="log누적수익률", color="구분", facet_col="반감기")
-    fig_2.update_layout(width = 700, height = 300)
+    fig_2 = px.line(
+        hl_1_3, x="index", y="log누적수익률", color="구분", facet_col="반감기"
+    )
+    fig_2.update_layout(width=700, height=300)
 
     # HTML 파일로 저장
     log_profit_btc_category = fig_2.to_html(full_html=False)
 
     context = {
-        # 누적수익률 그래프 
-        "log_profit_btc_graph" : log_profit_btc_graph,
+        # 누적수익률 그래프
+        "log_profit_btc_graph": log_profit_btc_graph,
         # 누적, 구간 log 수익률 그래프
-        "log_profit_btc_category" : log_profit_btc_category
+        "log_profit_btc_category": log_profit_btc_category,
     }
 
     return render(request, "detail_halving_pattern.html", context)
@@ -421,12 +446,12 @@ def portfolio(request):
     default_price = 5000000
     default_weight = [0.25, 0.25, 0.25, 0.25]
 
-    default_usd = yf.download(default_tick, start=default_start, end=default_end)[
-        "Adj Close"
-    ]
-    default_btc_data = yf.download(default_btc, start=default_start, end=default_end)[
-        "Adj Close"
-    ]
+    default_usd = yf.download(
+        default_tick, start=default_start, end=default_end, progress=False
+    )["Adj Close"]
+    default_btc_data = yf.download(
+        default_btc, start=default_start, end=default_end, progress=False
+    )["Adj Close"]
 
     default_df = (
         pd.merge(
@@ -474,7 +499,7 @@ def portfolio(request):
         weight = default_weight
 
     # 가공된 데이터 구조 생성
-    set_data = {"tick": {}, "btc": {}}
+    set_data = {"btc": {}, "tick": {}}
 
     # tick과 weight 매핑
     for i, t in enumerate(tick):
@@ -483,14 +508,12 @@ def portfolio(request):
     # btc와 weight 매핑
     for i, b in enumerate(btc):
         btc_index = i + len(tick)  # btc의 weight는 tick 이후의 값으로 매핑
-        set_data["btc"][b] = (
-            weight[btc_index] if btc_index < isinstance(weight_raw, str) else 0.0
-        )
+        set_data["btc"][b] = weight[btc_index] if btc_index < len(weight) else 0.0
 
     # 데이터 가져오기
     try:
-        usd = yf.download(tick, start=start, end=end)["Adj Close"]
-        btc_data = yf.download(btc, start=start, end=end)["Adj Close"]
+        usd = yf.download(tick, start=start, end=end, progress=False)["Adj Close"]
+        btc_data = yf.download(btc, start=start, end=end, progress=False)["Adj Close"]
 
         # 데이터 병합
         merged_data = (
@@ -512,7 +535,9 @@ def portfolio(request):
     # ===== 포트폴리오 설정 =====
     # ==========================
     # 실시간 환율 가져오기
-    exchange_rate_data = yf.download(["USDKRW=X"], period="1d")["Adj Close"].iloc[-1]
+    exchange_rate_data = yf.download(["USDKRW=X"], period="1d", progress=False)[
+        "Adj Close"
+    ].iloc[-1]
     exchange_rate = round(exchange_rate_data.iloc[0], 2)
 
     # 원화 -> USD 변환
@@ -545,21 +570,20 @@ def portfolio(request):
     last_price = get_latest_prices(merged_data)
     user_allocation = {}
     user_leftover = change_price
-    # user_buy = 0
-    for key, value in set_data.items():
-        for i in value:
-            if key == "btc":
-                # 암호화폐는 소수점 이하 단위까지 계산
-                user_buy = (change_price * value[i]) / last_price[i]
-                user_allocation[i] = f"{user_buy:.2f}"
-                # 사용한 금액만큼 잔액 차감
-                user_leftover -= user_buy * last_price[i]
-            else:
-                # 주식은 정수로 계산
-                user_buy = (change_price * value[i]) // last_price[i]
-                user_allocation[i] = int(user_buy)
-                # 사용한 금액만큼 잔액 차감
-                user_leftover -= user_buy * last_price[i]
+    for key, value in user_weight.items():
+        #  for i in value:
+        if key in btc:
+            # 암호화폐는 소수점 이하 단위까지 계산
+            user_buy = (change_price * value) / last_price[key]
+            user_allocation[key] = f"{user_buy:.2f}"
+            # 사용한 금액만큼 잔액 차감
+            user_leftover -= user_buy * last_price[key]
+        else:
+            # 주식은 정수로 계산
+            user_buy = (change_price * value) // last_price[key]
+            user_allocation[key] = int(user_buy)
+            # 사용한 금액만큼 잔액 차감
+            user_leftover -= user_buy * last_price[key]
 
     # 고정된 포트폴리오
     # 예상 수익률과 일일 자산 수익률의 연간 공분산 행렬을 계산
@@ -577,13 +601,13 @@ def portfolio(request):
     ef.set_weights(weight_dict)
 
     # 분산계산
-    clean_weights = np.array(weight_dict)
+    fix_weights = np.array(weight_dict)
 
     # 일간 수익률
-    clean_returns = default_df.pct_change().dropna()
+    fix_returns = default_df.pct_change().dropna()
     # 누적 수익률
-    clean_portfolio_returns = (clean_returns * clean_weights).sum(axis=1)
-    clean_cumulative_returns = (1 + clean_portfolio_returns).cumprod()
+    fix_portfolio_returns = (fix_returns * fix_weights).sum(axis=1)
+    fix_cumulative_returns = (1 + fix_portfolio_returns).cumprod()
 
     allocation = {}
     leftover = change_price
@@ -605,12 +629,25 @@ def portfolio(request):
     # 포트폴리오 성과
     port = ef.portfolio_performance(verbose=False)
 
-    # MDD
-    cumulative_max = merged_data.cummax()
-    drawdown = (merged_data / cumulative_max) - 1
-    dd = drawdown.cummin()
-    mdd = -dd.min()
-    mdd_mean = round(mdd.mean() * 100, 2)
+    # 사용자 포트폴리오 MDD 계산
+    # 각 자산의 수익률에 비중을 곱하고, 각 날짜벼로 모든 자산의 수익률을 합산
+    user_portfolio_returns = (returns * weights).sum(axis=1)
+    user_cumulative_value = (1 + user_portfolio_returns).cumprod()  # 누적가치치
+    user_cumulative_max = user_cumulative_value.cummax()  # 누적 최고점
+    user_drawdown = ((user_cumulative_value / user_cumulative_max) - 1) * 100  # 하락률
+    user_mdd = -user_drawdown.min()  # 최대 하락률
+
+    # 고정된 포트폴리오 MDD 계산
+    # 고정된 포트폴리오의 일별 수익률 / 각자산의 비중에 모든 자산의 수익률을 합산
+    fixed_daily_returns = (fix_returns * fix_weights).sum(
+        axis=1
+    )  # 고정 포트폴리오 가치
+    fixed_cumulative_value = (1 + fixed_daily_returns).cumprod()  # 누적가치
+    fixed_cumulative_max = fixed_cumulative_value.cummax()  # 누적 최고점
+    fixed_drawdown = (
+        (fixed_cumulative_value / fixed_cumulative_max) - 1
+    ) * 100  # 하락률
+    fixed_mdd = -fixed_drawdown.min()  # 최대 하락률
 
     ### 시각화 ###
     # line_grahp 생성
@@ -687,7 +724,7 @@ def portfolio(request):
         round(port[0], 2),
         round(port[1], 2),
         round(port[2], 2),
-        round(clean_cumulative_returns.iloc[-1], 2),
+        round(fix_cumulative_returns.iloc[-1], 2),
     ]
 
     bar_fig.add_trace(go.Bar(x=col, y=user_y, name="사용자 포트폴리오"))
@@ -710,6 +747,7 @@ def portfolio(request):
             "연간 변동성": f"{user_port[1]:.2f}",  # 연간 변동성
             "샤프 비율": f"{user_port[2]:.2f}",  # 샤프비율
             "누적 수익률": round(cumulative_returns.iloc[-1], 2),  # 누적 수익률
+            "최대 낙폭(MDD)": round(user_mdd, 2),
         },
         # 고정된 포트폴리오
         "optimized_weights": weight_dict,  # 자산 비중
@@ -719,9 +757,10 @@ def portfolio(request):
             "연간 기대 수익률": f"{port[0]:.2f}",  # 연간 기대 수익률
             "연간 변동성": f"{port[1]:.2f}",  # 연간 변동성
             "샤프 비율": f"{port[2]:.2f}",  # 샤프비율
-            "누적 수익률": round(clean_cumulative_returns.iloc[-1], 2),  # 누적 수익률
+            "누적 수익률": round(fix_cumulative_returns.iloc[-1], 2),  # 누적 수익률
+            "최대 낙폭(MDD)": round(fixed_mdd, 2),
         },
-        "mdd_mean": mdd_mean,  # MDD
+        # "mdd_mean": mdd_mean,  # MDD
         "exchange_rate": exchange_rate,  # 환율
         # 시각화 코드
         "line_graph": line_graph_html,
