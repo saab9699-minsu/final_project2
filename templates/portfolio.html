@@ -215,7 +215,10 @@
           </div>
           <div>
             <label for="weight">자산 비중</label>
-            <input type="text" id="weight" name="weight" value="{{ default_weight }}">
+            <input type="text" id="weight" name="weight" value="{{ default_weight }}" placeholder="0.25, 0.25, 0.25, 0.25">
+            {% if error_message %}
+                <p style="color: red;">{{ error_message }}</p>
+            {% endif %}
           </div>
           <div>
             <label for="price">초기 자금</label>
@@ -267,15 +270,15 @@
                 </td>
               </tr>
               <tr>
-                <td class="highlight">남은 자금</td>
+                <td class="highlight">남은 자금($)</td>
                 <td>{{ user_leftover }}</td>
               </tr>
               <tr>
                 <td class="highlight">최대 낙폭(MDD)</td>
-                <td>{{ mdd_mean }}%</td>
+                <td>{{ user_mdd }}%</td>
               </tr>
               <tr>
-                <td class="highlight">사용한 환율(USD)</td>
+                <td class="highlight">기준 환율(USD/KRW)</td>
                 <td>{{ exchange_rate }}</td>
               </tr>
             </tbody>
@@ -309,7 +312,7 @@
                 </td>
               </tr>
               <tr>
-                <td class="highlight">최적화된 포트폴리오 성과</td>
+                <td class="highlight">고정된 포트폴리오 성과</td>
                 <td>
                   {% for key, value in portfolio_performance.items %}
                     {{ key }} : {{ value }}<br>
@@ -317,8 +320,16 @@
                 </td>
               </tr>
               <tr>
-                <td class="highlight">남은 자금</td>
+                <td class="highlight">남은 자금($)</td>
                 <td>{{ leftover }}</td>
+              </tr>
+              <tr>
+                <td class="highlight">최대 낙폭(MDD)</td>
+                <td>{{ fix_mdd }}%</td>
+              </tr>
+                <tr>
+                <td class="highlight">기준 환율(USD/KRW)</td>
+                <td>{{ exchange_rate }}</td>
               </tr>
             </tbody>
           </table>
