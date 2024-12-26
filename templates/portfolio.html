@@ -225,32 +225,45 @@
         <button type="submit">확인</button>
       </form>
       </div>
+
       <div>
-        <h2>포트폴리오 설정 가이드</h2>
-        <p>
-            <strong>[시작 날짜], [종료 날짜]</strong>를 설정하여 원하는 기간을 선택할 수 있습니다.
-        </p>
-        <ul>
-            <li>아래 그래프에서 각 종목의 종가를 확인하세요.</li>
-            <li>선택한 기간 동안의 성과는 아래 <strong>User Portfolio</strong>에서 확인 가능합니다.</li>
-        </ul>
-        <p>
-            <strong>[가상화폐 종목]</strong>과 <strong>[주식 종목]</strong>에서 원하시는 종목을 추가하거나 삭제할 수 있습니다.
-        </p>
-        <p>
-            <strong>[자산 비중]</strong>에서는 설정하신 종목의 개수에 따라 비중을 나누어 주세요.
-        </p>
-        <ul>
-            <li>설정한 종목의 개수만큼 비중을 설정해야 합니다.</li>
-            <li>비중의 합이 <strong>1</strong>이 되도록 설정해주세요.</li>
-        </ul>
-        <p>예시)
-            <li>종목: SPY, GLD, TLT, BTC_USD</li>
-            <li>비중: 0.3, 0.3, 0.3, 0.1</li>
-        </p>
+        <div class="heading_container">
+          <h2 style="margin: 30px auto 0;">
+            포트폴리오 설정 가이드
+          </h2>
+        </div>
+        <div style="display: flex; margin-top: 30px;">
+          <div>
+            <p>
+              <strong>[시작 날짜], [종료 날짜]</strong>를 설정하여 원하는 기간을 선택할 수 있습니다.
+            </p>
+            <ul>
+                <li>아래 그래프에서 각 종목의 종가를 확인하세요.</li>
+                <li>선택한 기간 동안의 성과는 아래 <strong>User Portfolio</strong>에서 확인 가능합니다.</li>
+            </ul>
+            <p>
+                <strong>[가상화폐 종목]</strong>과 <strong>[주식 종목]</strong>에서 원하시는 종목을 추가하거나<br>
+                삭제할 수 있습니다.
+            </p>
+          </div>
+          <div style="margin-left: 50px;">
+            <p>
+              <strong>[자산 비중]</strong>에서는 설정하신 종목의 개수에 따라 비중을 나누어 주세요.
+            </p>
+            <ul>
+                <li>설정한 종목의 개수만큼 비중을 설정해야 합니다.</li>
+                <li>비중의 합이 <strong>1</strong>이 되도록 설정해주세요.</li>
+            </ul>
+            <p>예시)
+                <li>종목: SPY, GLD, TLT, BTC_USD</li>
+                <li>비중: 0.3, 0.3, 0.3, 0.1</li>
+            </p>
+          </div>
+        </div>
       <div>
+
       <!-- 그래프 표시 -->
-      <div id="line_graph" style="margin: auto;">
+      <div id="line_graph" style="margin: auto; width: 70%;">
           {{ line_graph|safe }}
       </div>
 

@@ -429,8 +429,13 @@ def index(request):
 
     coins = cache.get("coins_cache")
     if coins is None:
-        coins = upbit2()
+        try:
+            coins = upbit2()
+        except:
+            coins = coins2
         cache.set("coins_cache", coins, 10)
+    else:
+        coins2 = coins
 
 
     context = {
