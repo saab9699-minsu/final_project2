@@ -727,24 +727,24 @@ def portfolio(request):
         yaxis2=dict(title="Price (Stocks)", overlaying="y", side="right"),  # 오른쪽 y축
     )
 
-    # # pie 그래프
-    # pie_fig = make_subplots(
-    #     rows=1,
-    #     cols=2,
-    #     specs=[[{"type": "domain"}, {"type": "domain"}]],
-    #     subplot_titles=("사용자 설정 자산 비중", "고정된 자산 비중"),
-    # )
+    # pie 그래프
+    pie_fig = make_subplots(
+        rows=1,
+        cols=2,
+        specs=[[{"type": "domain"}, {"type": "domain"}]],
+        subplot_titles=("사용자 설정 자산 비중", "고정된 자산 비중"),
+    )
 
-    # pie_fig.add_traces(
-    #     go.Pie(labels=list(user_weight.keys()), values=list(user_weight.values())),
-    #     rows=1,
-    #     cols=1,
-    # )
-    # pie_fig.add_traces(
-    #     go.Pie(labels=list(weight_dict.keys()), values=list(weight_dict.values())),
-    #     rows=1,
-    #     cols=2,
-    # )
+    pie_fig.add_traces(
+        go.Pie(labels=list(user_weight.keys()), values=list(user_weight.values())),
+        rows=1,
+        cols=1,
+    )
+    pie_fig.add_traces(
+        go.Pie(labels=list(weight_dict.keys()), values=list(weight_dict.values())),
+        rows=1,
+        cols=2,
+    )
 
     # bar 그래프
     bar_fig = make_subplots()
