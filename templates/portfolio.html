@@ -47,7 +47,7 @@
 
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 15px;
       margin-bottom: 20px;
     }
@@ -151,7 +151,7 @@
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
           <a class="navbar-brand" href="{% url 'test:index' %}">
             <div class="img-box">
-              <img src="/media/images/free-icon-search-bitcoin-15641585.png" width="70px" alt="">
+              <img src="/media/images/코돌프.png" width="70px" alt="">
             </div>
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -206,12 +206,12 @@
             <input type="date" id="end" name="end" value="{{ default_end }}">
           </div>
           <div>
-            <label for="btc">가상화폐 종목</label>
-            <input type="text" id="btc" name="btc" value="{{ default_btc }}">
-          </div>
-          <div>
             <label for="tick">주식 종목</label>
             <input type="text" id="tick" name="tick" value="{{ default_tick }}">
+          </div>
+          <div>
+            <label for="btc">가상화폐 종목</label>
+            <input type="text" id="btc" name="btc" value="{{ default_btc }}">
           </div>
           <div>
             <label for="weight">자산 비중</label>
