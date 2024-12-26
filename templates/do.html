@@ -13,6 +13,7 @@
   <meta name="author" content="" />
 
   <title>CoDolph</title>
+  <link rel="icon" href="/media/images/코돌프(검정).png" type="image/x-icon">
 
   <!-- slider stylesheet -->
   <!-- slider stylesheet -->
@@ -33,6 +34,16 @@
     }
     #github:hover {
       color: gray;
+    }
+
+    #coin_logo {
+      position: absolute; 
+      opacity: 0;
+      transition-duration: 1s;
+    }
+    #coin_logo:hover {
+      transform:rotate(1turn);
+      opacity: 1;
     }
   </style>
 </head>
@@ -202,8 +213,6 @@
           </div>
         </div>
 
-
-
         <div class="col-md-3" style="margin-left: 125px;">
           <div class="info_info">
             <h5>
@@ -214,6 +223,13 @@
             </p>
           </div>
         </div>
+
+        <div class="col-md-3">
+          <div class="info_info">
+            <img id="coin_logo" src="/media/images/이더리움로고.png" width="50px">
+          </div>
+        </div>
+
         </div>
       </div>
     </div>

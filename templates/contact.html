@@ -15,6 +15,7 @@
     <meta name="author" content="" />
 
     <title>CoDolph</title>
+    <link rel="icon" href="/media/images/코돌프(검정).png" type="image/x-icon">
 
     <!-- slider stylesheet -->
     <!-- slider stylesheet -->
@@ -112,6 +113,18 @@
     #github:hover {
       color: gray;
     }
+
+    #coin_logo {
+      position: absolute; 
+      opacity: 0;
+      transition-duration: 1s;
+      transform:translateX(0px);
+    }
+    #coin_logo:hover {
+      transform:translateX(-200px);
+      opacity: 1;
+    }
+
     </style>
   </head>
 
@@ -202,6 +215,7 @@
           <h2>
             CNN을 통한 비트코인 가격예측
           </h2>
+          <p style="color: #525252; font-weight: 900; margin-bottom: 0px;">(20일치 일봉)</p>
         </div>
         <!-- CNN Chart Section -->
         <div class="section chart-container" style="margin-top: 20px;">
@@ -300,6 +314,11 @@
               <p>
                 가상자산의 가치 변동으로 인한 손실 발생 가능성 등을 유념하시어 무리한 투자는 지양 하십시기 바랍니다.
               </p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="info_info">
+              <img id="coin_logo" src="/media/images/솔라나로고.png" width="50px">
             </div>
           </div>
           </div>
