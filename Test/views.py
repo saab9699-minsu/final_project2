@@ -9,6 +9,7 @@ from django.conf import settings
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import tensorflow as tf
+import time
 
 from sklearn.preprocessing import MinMaxScaler
 
@@ -45,6 +46,8 @@ from pypfopt import expected_returns
 from pypfopt.efficient_frontier import EfficientFrontier
 from pypfopt.discrete_allocation import DiscreteAllocation, get_latest_prices
 
+# 캐쉬 저장
+from django.core.cache import cache
 
 # Create your views here.
 
@@ -295,128 +298,140 @@ def index(request):
     # ==========================
     # ======= 뉴스 실시간 =======
     # ==========================
+    news = cache.get("news_cache")
+    if news is None:
+        news = news_crawling()[:5]
+        cache.set("news_cache", news, 60 * 10)
 
-    news = news_crawling()[:5]
+    pie_chart = cache.get("pie_chart_cache")
+    if pie_chart is None:
+        tokenizer = AutoTokenizer.from_pretrained("snunlp/KR-FinBert-SC")
+        model = AutoModelForSequenceClassification.from_pretrained("snunlp/KR-FinBert-SC")
 
-    tokenizer = AutoTokenizer.from_pretrained("snunlp/KR-FinBert-SC")
-    model = AutoModelForSequenceClassification.from_pretrained("snunlp/KR-FinBert-SC")
+        classifier = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
 
-    classifier = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
+        news2 = news_crawling()
+        news2 = pd.DataFrame(news2)
 
-    news2 = news_crawling()
-    news2 = pd.DataFrame(news2)
+        label_list1 = []
+        for i in range(len(news2)):
+            label1, score1 = classifier(news2.iloc[i, 0])[0].values()
+            label_list1.append(label1)
 
-    label_list1 = []
-    for i in range(len(news2)):
-        label1, score1 = classifier(news2.iloc[i, 0])[0].values()
-        label_list1.append(label1)
+        news2["분류"] = label_list1
 
-    news2["분류"] = label_list1
+        news2["하락"] = news2["title"].map(lambda x: 1 if x.find("하락") > 0 else 0)
+        news2["상승"] = news2["title"].map(lambda x: 1 if x.find("상승") > 0 else 0)
+        news2.loc[(news2["하락"] == 1) & (news2["분류"] != "positive"), "분류"] = "negative"
+        news2.loc[(news2["상승"] == 1) & (news2["분류"] != "negative"), "분류"] = "positive"
 
-    news2["하락"] = news2["title"].map(lambda x: 1 if x.find("하락") > 0 else 0)
-    news2["상승"] = news2["title"].map(lambda x: 1 if x.find("상승") > 0 else 0)
-    news2.loc[(news2["하락"] == 1) & (news2["분류"] != "positive"), "분류"] = "negative"
-    news2.loc[(news2["상승"] == 1) & (news2["분류"] != "negative"), "분류"] = "positive"
-
-    news2_counts = news2["분류"].value_counts()
-    ratio = news2_counts.loc[["neutral", "positive", "negative"]].values
-    labels = news2_counts.loc[["neutral", "positive", "negative"]].index
-    explode = [0.05, 0.05, 0.05]
-    plt.figure(figsize=(4, 3))
-    plt.pie(
-        ratio,
-        labels=labels,
-        autopct="%.1f%%",
-        startangle=260,
-        counterclock=False,
-        explode=explode,
-        shadow=True,
-        colors=["gray", "skyblue", "coral"],
-    )
-    plt.axis("equal")
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format="png")
-    buffer.seek(0)
-    image_png = buffer.getvalue()
-    buffer.close()
-    pie_chart = base64.b64encode(image_png).decode("utf-8")
-    plt.close()
+        news2_counts = news2["분류"].value_counts()
+        ratio = news2_counts.loc[["neutral", "positive", "negative"]].values
+        labels = news2_counts.loc[["neutral", "positive", "negative"]].index
+        explode = [0.05, 0.05, 0.05]
+        plt.figure(figsize=(4, 3))
+        plt.pie(
+            ratio,
+            labels=labels,
+            autopct="%.1f%%",
+            startangle=260,
+            counterclock=False,
+            explode=explode,
+            shadow=True,
+            colors=["gray", "skyblue", "coral"],
+        )
+        plt.axis("equal")
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format="png")
+        buffer.seek(0)
+        image_png = buffer.getvalue()
+        buffer.close()
+        pie_chart = base64.b64encode(image_png).decode("utf-8")
+        plt.close()
+        cache.set("pie_chart_cache", pie_chart, 60 * 10)
 
     # ================================
     # ===== 비트코인 실시간 그래프 =====
     # ================================
 
-    btc_df = pyupbit.get_ohlcv("KRW-BTC", interval="minute5", count=24 * 12)
-    btc_df.index.name = "Date"  # X축에 날짜 표시를 위해 인덱스명 추가
+    graph = cache.get("graph_cache")
+    if graph is None:
+        btc_df = pyupbit.get_ohlcv("KRW-BTC", interval="minute5", count=24 * 12)
+        btc_df.index.name = "Date"  # X축에 날짜 표시를 위해 인덱스명 추가
 
-    # 이동평균선 설정
-    mav = (5, 20)  # 5분, 20분 이동평균선 추가
+        # 이동평균선 설정
+        mav = (5, 20)  # 5분, 20분 이동평균선 추가
 
-    # 최신 가격 정보
-    last_price = btc_df["close"].iloc[-1]  # 최신 가격
+        # 최신 가격 정보
+        last_price = btc_df["close"].iloc[-1]  # 최신 가격
 
-    # 빨간색 점선 가로선 추가
-    latest_price_line = [last_price] * len(btc_df)  # 모든 행에 동일한 최신 가격 추가
-    addplot = [
-        mpf.make_addplot(
-            latest_price_line, color="red", linestyle="dashed", alpha=0.5
-        ),  # 빨간색 점선 가로선
-    ]
+        # 빨간색 점선 가로선 추가
+        latest_price_line = [last_price] * len(btc_df)  # 모든 행에 동일한 최신 가격 추가
+        addplot = [
+            mpf.make_addplot(
+                latest_price_line, color="red", linestyle="dashed", alpha=0.5
+            ),  # 빨간색 점선 가로선
+        ]
 
-    # 차트 스타일 설정 (음봉 파란색, 양봉 빨간색)
-    mc = mpf.make_marketcolors(
-        up="red",  # 양봉 (상승) 색상
-        down="blue",  # 음봉 (하락) 색상
-        edge="inherit",  # 테두리 색상은 캔들 색상과 동일
-        wick="inherit",  # 심지 색상은 캔들 색상과 동일
-        volume="in",  # 거래량 색상 설정
-    )
-    s = mpf.make_mpf_style(marketcolors=mc, gridcolor="#e6e6e6")  # 스타일 설정
+        # 차트 스타일 설정 (음봉 파란색, 양봉 빨간색)
+        mc = mpf.make_marketcolors(
+            up="red",  # 양봉 (상승) 색상
+            down="blue",  # 음봉 (하락) 색상
+            edge="inherit",  # 테두리 색상은 캔들 색상과 동일
+            wick="inherit",  # 심지 색상은 캔들 색상과 동일
+            volume="in",  # 거래량 색상 설정
+        )
+        s = mpf.make_mpf_style(marketcolors=mc, gridcolor="#e6e6e6")  # 스타일 설정
 
-    # 차트 그리기
-    fig, ax = mpf.plot(
-        btc_df,
-        type="candle",  # 캔들 차트
-        style=s,  # 스타일 적용
-        mav=mav,  # 이동평균선
-        volume=True,  # 거래량 표시
-        addplot=addplot,  # 빨간색 점선 가로선 추가
-        returnfig=True,  # fig 객체 반환
-        figratio=(27, 9),  # 차트 비율 조절
-    )
+        # 차트 그리기
+        fig, ax = mpf.plot(
+            btc_df,
+            type="candle",  # 캔들 차트
+            style=s,  # 스타일 적용
+            mav=mav,  # 이동평균선
+            volume=True,  # 거래량 표시
+            addplot=addplot,  # 빨간색 점선 가로선 추가
+            returnfig=True,  # fig 객체 반환
+            figratio=(27, 9),  # 차트 비율 조절
+        )
 
-    # 최신 가격 텍스트 추가
-    ax[0].text(
-        x=len(btc_df) + 30,  # x축 위치 (마지막 데이터 위치)
-        y=last_price,  # y축 위치 (최신 가격)
-        s=f"{last_price:,.0f} KRW",  # 천 단위 쉼표 추가
-        color="white",  # 텍스트 색상
-        fontsize=12,  # 폰트 크기
-        fontweight="bold",  # 폰트 굵기
-        verticalalignment="center",  # 세로 정렬
-        horizontalalignment="center",  # 가로 정렬
-        bbox=dict(
-            facecolor="red",  # 박스 배경 색상
-            edgecolor="none",  # 테두리 제거
-            boxstyle="larrow,pad=0.4",  # 왼쪽 화살표 모양
-            alpha=0.9,  # 투명도 (0=투명, 1=불투명)
-        ),
-    )
+        # 최신 가격 텍스트 추가
+        ax[0].text(
+            x=len(btc_df) + 30,  # x축 위치 (마지막 데이터 위치)
+            y=last_price,  # y축 위치 (최신 가격)
+            s=f"{last_price:,.0f} KRW",  # 천 단위 쉼표 추가
+            color="white",  # 텍스트 색상
+            fontsize=12,  # 폰트 크기
+            fontweight="bold",  # 폰트 굵기
+            verticalalignment="center",  # 세로 정렬
+            horizontalalignment="center",  # 가로 정렬
+            bbox=dict(
+                facecolor="red",  # 박스 배경 색상
+                edgecolor="none",  # 테두리 제거
+                boxstyle="larrow,pad=0.4",  # 왼쪽 화살표 모양
+                alpha=0.9,  # 투명도 (0=투명, 1=불투명)
+            ),
+        )
 
-    # 이미지로 변환
-    buffer = io.BytesIO()
-    fig.savefig(buffer, format="png")  # 그래프를 버퍼에 저장
-    buffer.seek(0)
-    image_png = buffer.getvalue()
-    buffer.close()
-    graph = base64.b64encode(image_png).decode("utf-8")  # base64로 인코딩
-    plt.close(fig)
+        # 이미지로 변환
+        buffer = io.BytesIO()
+        fig.savefig(buffer, format="png")  # 그래프를 버퍼에 저장
+        buffer.seek(0)
+        image_png = buffer.getvalue()
+        buffer.close()
+        graph = base64.b64encode(image_png).decode("utf-8")  # base64로 인코딩
+        plt.close()
+        cache.set("graph_cache", graph, 60)
 
     # ==========================
     # ===== 코인시세 실시간 =====
     # ==========================
 
-    coins = upbit2()
+    coins = cache.get("coins_cache")
+    if coins is None:
+        coins = upbit2()
+        cache.set("coins_cache", coins, 10)
+
 
     context = {
         "graph": graph,  # 실시간 비트코인시세 그래프

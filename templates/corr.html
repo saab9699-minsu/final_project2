@@ -77,7 +77,7 @@
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
           <a class="navbar-brand" href="{% url 'test:index' %}">
             <div class="img-box">
-              <img src="/media/images/free-icon-search-bitcoin-15641585.png" width="70px" alt="">
+              <img src="/media/images/코돌프.png" width="70px" alt="">
             </div>
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,7 @@
                   <a class="nav-link" href="{% url 'test:about' %}"> About </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'test:do' %}"> What we do </a>
+                  <a class="nav-link" href="{% url 'test:do' %}"> Analysis </a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'test:portfolio' %}"> Portfolio </a>
@@ -364,6 +364,15 @@
         4차 반감기에서는 주요 경제 지표와의 연관성이 약화되며, 글로벌 투자 심리 및 경제 환경의 변화가 더 중요한 변수로 작용하고 있습니다.
         이 변화가 장기적으로 지속될지는 앞으로의 경제 환경과 투자 심리에 달려 있습니다.
       </p>
+
+      <p>
+        다른 요인에 대한 분석을 보고 싶으시다면 아래 링크를 클릭하세요 
+     </p>
+     <ul>
+         <a href="{% url 'test:halving_pattern' %}"> <li>반감기 패턴: 비트코인 반감기 패턴</li></a>
+         <a href="{% url 'test:detail_issue' %}"> <li>글로벌 이벤트: 규제 변화, 대규모 해킹 사건 등</li></a>
+         <a href="{% url 'test:technical_analysis' %}"> <li>기술적 분석: 지지선과 저항선, 이동 평균</li ></a>
+     </ul>
     </div>
 </section>
 <hr>
