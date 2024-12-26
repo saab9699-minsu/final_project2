@@ -474,7 +474,7 @@ def portfolio(request):
     # 기본값 설정
     default_start = "2024-01-01"  # 시작 날짜 기본값
     default_end = date.today().isoformat()  # 종료날짜 기본값
-    default_tick = ["SPY", "GLD", "TLT"]  # 기본 종목
+    default_tick = ["GLD", "SPY", "TLT"]  # 기본 종목
     default_btc = ["BTC-USD"]  # 기본 BTC 심볼
     default_price = 5000000
     default_weight = [0.25, 0.25, 0.25, 0.25]
@@ -498,6 +498,7 @@ def portfolio(request):
     btc = [b.strip() for b in btc_raw.split(",")] if btc_raw else default_btc
 
     # 쉼표로 구분된 weight 값
+    error_message = None
     weight_raw = request.POST.get("weight", "")
     try:
         # 리스트로 변환환
@@ -507,8 +508,10 @@ def portfolio(request):
             else default_weight
         )
         if sum(weight) != 1:
+            error_message = "합이 1이 아닙니다. 기본 가중치를 사용합니다."
             weight = default_weight
     except (ValueError, TypeError):
+        error_message = "유효하지 않은 입력입니다. 기본 가중치를 사용합니다."
         weight = default_weight
 
     # 가공된 데이터 구조 생성
@@ -608,7 +611,8 @@ def portfolio(request):
         if key in btc:
             # 암호화폐는 소수점 이하 단위까지 계산
             user_buy = (change_price * value) / last_price[key]
-            user_allocation[key] = f"{user_buy:.2f}"
+            btc_value_in_dollars = user_buy * last_price[key]
+            user_allocation[key] = round(btc_value_in_dollars, 2)
             # 사용한 금액만큼 잔액 차감
             user_leftover -= user_buy * last_price[key]
         else:
@@ -649,7 +653,8 @@ def portfolio(request):
         if key in btc:
             # 암호화폐는 소수점 이하 단위까지 계산
             btc_buy = (change_price * value) / last_price[key]
-            allocation[key] = f"{btc_buy:.2f}"  # 소수점 포함
+            btc_value_in_dollars = btc_buy * last_price[key]
+            allocation[key] = round(btc_value_in_dollars, 2)  # 소수점 포함
             # 사용한 금액만큼 잔액 차감
             leftover -= btc_buy * last_price[key]
         else:
@@ -780,8 +785,8 @@ def portfolio(request):
             "연간 변동성": f"{user_port[1]:.2f}",  # 연간 변동성
             "샤프 비율": f"{user_port[2]:.2f}",  # 샤프비율
             "누적 수익률": round(cumulative_returns.iloc[-1], 2),  # 누적 수익률
-            "최대 낙폭(MDD)": round(user_mdd, 2),
         },
+        "user_mdd": round(user_mdd, 2),
         # 고정된 포트폴리오
         "optimized_weights": weight_dict,  # 자산 비중
         "Discrete_allocation": allocation,  # 각 항목 별 개별 할당
@@ -791,8 +796,8 @@ def portfolio(request):
             "연간 변동성": f"{port[1]:.2f}",  # 연간 변동성
             "샤프 비율": f"{port[2]:.2f}",  # 샤프비율
             "누적 수익률": round(fix_cumulative_returns.iloc[-1], 2),  # 누적 수익률
-            "최대 낙폭(MDD)": round(fixed_mdd, 2),
         },
+        "fix_mdd": round(fixed_mdd, 2),
         # "mdd_mean": mdd_mean,  # MDD
         "exchange_rate": exchange_rate,  # 환율
         # 시각화 코드
@@ -804,6 +809,8 @@ def portfolio(request):
         "default_tick": ",".join(tick),  # 입력한 종목 유지
         "default_btc": ",".join(btc),  # 입력한 BTC 종목 유지
         "default_price": price,  # 입력한 초기자금 유지
+        # "default_weight": ",".join(map(str(weight))),
+        "error_message": error_message,
     }
     return render(request, "portfolio.html", context)
 
@@ -826,7 +833,7 @@ def corr(request):
 
     # 전체기간 상관관계 heatmap
     full_corr_fig = px.imshow(
-        df.corr(numeric_only=True),
+        df_mean.corr(numeric_only=True, method="spearman"),
         text_auto=".2",
         aspect="auto",
         color_continuous_scale="PuBU",
@@ -839,8 +846,8 @@ def corr(request):
     halving = [df1, df2, df3, df4]
 
     for i, df_corr in enumerate(halving, start=1):
-        corr = df_corr.corr(numeric_only=True)["btc"]
-        df_halving[f"{i}차 반감기기"] = corr
+        corr = df_corr.corr(numeric_only=True, method="spearman")["btc"]
+        df_halving[f"{i}차 반감기"] = corr
 
     # 주식시장 그래프
     stock_fig = make_subplots(rows=2, cols=1)
