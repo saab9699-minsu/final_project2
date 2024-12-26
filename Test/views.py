@@ -517,7 +517,7 @@ def portfolio(request):
             weight = default_weight
     except (ValueError, TypeError):
         error_message = "유효하지 않은 입력입니다. 기본 가중치를 사용합니다."
-        weight = default_weight
+        # weight = default_weight
 
     # 가공된 데이터 구조 생성
     set_data = {"btc": {}, "tick": {}}
