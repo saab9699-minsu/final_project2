@@ -28,6 +28,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = [] # "192.168.3.4"
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-cache-location',
+    }
+}
 
 # Application definition
 
