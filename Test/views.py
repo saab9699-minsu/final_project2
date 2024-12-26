@@ -651,23 +651,24 @@ def portfolio(request):
     fix_portfolio_returns = (fix_returns * fix_weights).sum(axis=1)
     fix_cumulative_returns = (1 + fix_portfolio_returns).cumprod()
 
+    fix_last_price = get_latest_prices(default_df)
     allocation = {}
     leftover = change_price
     # 비율에 따라 각 종목에 할당
     for key, value in weight_dict.items():
         if key in btc:
             # 암호화폐는 소수점 이하 단위까지 계산
-            btc_buy = (change_price * value) / last_price[key]
-            btc_value_in_dollars = btc_buy * last_price[key]
+            btc_buy = (change_price * value) / fix_last_price[key]
+            btc_value_in_dollars = btc_buy * fix_last_price[key]
             allocation[key] = round(btc_value_in_dollars, 2)  # 소수점 포함
             # 사용한 금액만큼 잔액 차감
-            leftover -= btc_buy * last_price[key]
+            leftover -= btc_buy * fix_last_price[key]
         else:
             # 주식은 정수 단위로 계산
-            stock_buy = (change_price * value) // last_price[key]
+            stock_buy = (change_price * value) // fix_last_price[key]
             allocation[key] = int(stock_buy)
             # 사용한 금액만큼 잔액 차감
-            leftover -= stock_buy * last_price[key]
+            leftover -= stock_buy * fix_last_price[key]
 
     # 포트폴리오 성과
     port = ef.portfolio_performance(verbose=False)
