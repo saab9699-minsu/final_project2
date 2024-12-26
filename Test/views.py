@@ -7,7 +7,8 @@ from datetime import datetime, timedelta
 from django.http import JsonResponse
 from django.conf import settings
 import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 import tensorflow as tf
 import time
 
@@ -115,29 +116,29 @@ def contact(request):
     if up_down[0] == 0:
         up_down2 = "하락"
 
-    #오늘 날짜 
+    # 오늘 날짜
     today = pd.to_datetime(datetime.today().strftime("%Y-%m-%d"))
 
-    # 2024년 12월 20일까지 업데이트 된 파일 
-    train = pd.read_csv("./data/web_btc.csv", index_col = 0)
+    # 2024년 12월 20일까지 업데이트 된 파일
+    train = pd.read_csv("./data/web_btc.csv", index_col=0)
     last_updatedate = pd.to_datetime(train["ds"].iloc[-1]) + timedelta(1)
-    
-    # 최근 날짜 데이터 업비트에서 불러오기  
-    btc_df = pyupbit.get_ohlcv("USDT-BTC", interval = "day", count = 10)
+
+    # 최근 날짜 데이터 업비트에서 불러오기
+    btc_df = pyupbit.get_ohlcv("USDT-BTC", interval="day", count=10)
     btc_df = btc_df.reset_index()
     btc_df = btc_df.loc[btc_df["index"] > last_updatedate, ["index", "close"]]
     btc_df.columns = ["ds", "y"]
     btc_df["ds"] = btc_df["ds"].dt.strftime("%Y-%m-%d")
-    
+
     # 최근 자료 결합 및 저장
-    train = pd.concat([train, btc_df], axis = 0).reset_index(drop = True)
+    train = pd.concat([train, btc_df], axis=0).reset_index(drop=True)
     train.to_csv("./data/web_btc.csv")
 
-    # 프로펫 예측 데이터 불러오기 
-    fcst = pd.read_csv("./data/web_fcst.csv", index_col = 0)
+    # 프로펫 예측 데이터 불러오기
+    fcst = pd.read_csv("./data/web_fcst.csv", index_col=0)
 
-# 프로펫 그래프 그리기 
-    #Figure 생성하기
+    # 프로펫 그래프 그리기
+    # Figure 생성하기
     fig = go.Figure()
 
     # 아래쪽 경계 (yhat_lower)
@@ -153,96 +154,105 @@ def contact(request):
     )
 
     # 위쪽 경계 (yhat_upper), 아래쪽과의 영역을 채움
-    fig.add_trace(go.Scatter(
-        x=fcst["ds"],
-        y=fcst["yhat_upper"],
-        fill='tonexty',  # 이전 y 값과의 영역을 채움
-        fillcolor='skyblue',  # 채움 색상
-        line_color='rgba(0,100,80,0)',  # 경계선을 숨김
-        name='예측값 범위(상단)',  # 범례 이름
-        showlegend=True
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x=fcst["ds"],
+            y=fcst["yhat_upper"],
+            fill="tonexty",  # 이전 y 값과의 영역을 채움
+            fillcolor="skyblue",  # 채움 색상
+            line_color="rgba(0,100,80,0)",  # 경계선을 숨김
+            name="예측값 범위(상단)",  # 범례 이름
+            showlegend=True,
+        )
+    )
 
-    # 예측 값 표시 
-    fig.add_trace(go.Scatter(
-        x=fcst["ds"],
-        y=fcst["yhat"],
-        line_color='#1f77b4',
-        name='예측값',  # 범례 이름
-        showlegend=True
-    ))
+    # 예측 값 표시
+    fig.add_trace(
+        go.Scatter(
+            x=fcst["ds"],
+            y=fcst["yhat"],
+            line_color="#1f77b4",
+            name="예측값",  # 범례 이름
+            showlegend=True,
+        )
+    )
 
-    # 실제값 표시 
-    fig.add_trace(go.Scatter(
-        x= train.loc[train["ds"] > "2016-07-09", "ds"],
-        y= train.loc[train["ds"] > "2016-07-09", "y"],
-        name='실제값',  # 범례 이름
-        showlegend=True
-    ))
+    # 실제값 표시
+    fig.add_trace(
+        go.Scatter(
+            x=train.loc[train["ds"] > "2016-07-09", "ds"],
+            y=train.loc[train["ds"] > "2016-07-09", "y"],
+            name="실제값",  # 범례 이름
+            showlegend=True,
+        )
+    )
 
     # 슬라이더 추가 (3개월 단위)
     fig.update_layout(
         xaxis=dict(
-            rangeslider=dict(
-                visible=True  # 슬라이더 활성화
-            ),
+            rangeslider=dict(visible=True),  # 슬라이더 활성화
             # (12개월)1달 이후 포함
-            range=[today - pd.DateOffset(months=11), today + pd.DateOffset(months=1)],  
+            range=[today - pd.DateOffset(months=11), today + pd.DateOffset(months=1)],
         ),
-        template="plotly_white", 
-        width= 1100,    
-        height= 600,
+        template="plotly_white",
+        width=1100,
+        height=600,
     )
 
-    fig.update_traces(mode='lines')
+    fig.update_traces(mode="lines")
 
     prophet = fig.to_html(full_html=False)
 
-# 예측 테이블
- # 날짜 업데이트해서 장기 예측
+    # 예측 테이블
+    # 날짜 업데이트해서 장기 예측
     time_li = [30, 60, 90, 180, 365]
     date_later_li = []
     pred_date_li = []
     pred_btc_li = []
 
-    for i in range(len(time_li)) : 
+    for i in range(len(time_li)):
         date_later = time_li[i]
-        pred_date = fcst.loc[fcst["ds"] == (today + timedelta(time_li[i])).strftime("%Y-%m-%d"),"ds"].astype("str").values[0]
-        pred_btc = round(fcst.loc[fcst["ds"] == (today + timedelta(time_li[i])).strftime("%Y-%m-%d"),"yhat"].values[0], -3)
-        
+        pred_date = (
+            fcst.loc[
+                fcst["ds"] == (today + timedelta(time_li[i])).strftime("%Y-%m-%d"), "ds"
+            ]
+            .astype("str")
+            .values[0]
+        )
+        pred_btc = round(
+            fcst.loc[
+                fcst["ds"] == (today + timedelta(time_li[i])).strftime("%Y-%m-%d"),
+                "yhat",
+            ].values[0],
+            -3,
+        )
+
         date_later_li.append(f"{date_later}일 후")
         pred_date_li.append(pred_date)
         pred_btc_li.append(f"약 {pred_btc} $")
 
-    df = pd.DataFrame({"구분" : date_later_li, 
-                    "예측일" : pred_date_li, 
-                    "예측가격" : pred_btc_li})  
+    df = pd.DataFrame(
+        {"구분": date_later_li, "예측일": pred_date_li, "예측가격": pred_btc_li}
+    )
 
     df = df.set_index("구분").T
-    df.reset_index(inplace = True)
-    
+    df.reset_index(inplace=True)
 
+    fig_table = ff.create_table(df)
 
-    fig_table =  ff.create_table(df)
-
-    fig_table.update_layout(
-    template="plotly_white", 
-    width= 1130,    
-    height= 200
-    )
+    fig_table.update_layout(template="plotly_white", width=1130, height=200)
 
     prophet_table = fig_table.to_html(full_html=False)
 
     context = {
         # CNN 예측 모델
-        "cnn_chart" : cnn_chart,
-        "prediction" : prediction,
-        "per" : per,
-        "up_down2" : up_down2,
-
+        "cnn_chart": cnn_chart,
+        "prediction": prediction,
+        "per": per,
+        "up_down2": up_down2,
         # prophet 예측 모델
-        "prophet" : prophet,
-        "prophet_table" : prophet_table,
+        "prophet": prophet,
+        "prophet_table": prophet_table,
     }
 
     return render(request, "contact.html", context)
@@ -257,28 +267,36 @@ def do(request):
 def halving_pattern(request):
     # 누적수익률
     detail_df = pd.read_csv("./data/log_profit_btc.csv")
-    fig = px.line(detail_df, x="index", y="누적수익률",color="반감기", 
-                labels= dict(index="반감기 이후 개월수"))
+    fig = px.line(
+        detail_df,
+        x="index",
+        y="누적수익률",
+        color="반감기",
+        labels=dict(index="반감기 이후 개월수"),
+    )
 
-    fig.update_layout(width = 700, height = 400, 
-                    title_text = "<b>누적수익률_반감기</b>", title_x = 0.5)
+    fig.update_layout(
+        width=700, height=400, title_text="<b>누적수익률_반감기</b>", title_x=0.5
+    )
 
     log_profit_btc_graph = fig.to_html(full_html=False)
 
     # 누적, 구간 그래프
     hl_1_3 = detail_df.loc[detail_df["반감기"].isin(["1차", "2차", "3차"])]
-    fig_2 = px.line(hl_1_3, x="index", y="log누적수익률", color="구분", facet_col="반감기")
+    fig_2 = px.line(
+        hl_1_3, x="index", y="log누적수익률", color="구분", facet_col="반감기"
+    )
     fig_2.update_xaxes(title="개월")
-    fig_2.update_layout(width = 800, height = 300)  
+    fig_2.update_layout(width=800, height=300)
 
     # HTML 파일로 저장
     log_profit_btc_category = fig_2.to_html(full_html=False)
 
     context = {
-        # 누적수익률 그래프 
-        "log_profit_btc_graph" : log_profit_btc_graph,
+        # 누적수익률 그래프
+        "log_profit_btc_graph": log_profit_btc_graph,
         # 누적, 구간 log 수익률 그래프
-        "log_profit_btc_category" : log_profit_btc_category
+        "log_profit_btc_category": log_profit_btc_category,
     }
 
     return render(request, "detail_halving_pattern.html", context)
@@ -287,8 +305,10 @@ def halving_pattern(request):
 def detail_issue(request):
     return render(request, "detail_issue.html")
 
+
 def technical_analysis(request):
     return render(request, "detail_technical_analysis.html")
+
 
 # ==================
 # ====== main ======
@@ -306,7 +326,9 @@ def index(request):
     pie_chart = cache.get("pie_chart_cache")
     if pie_chart is None:
         tokenizer = AutoTokenizer.from_pretrained("snunlp/KR-FinBert-SC")
-        model = AutoModelForSequenceClassification.from_pretrained("snunlp/KR-FinBert-SC")
+        model = AutoModelForSequenceClassification.from_pretrained(
+            "snunlp/KR-FinBert-SC"
+        )
 
         classifier = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
 
@@ -322,8 +344,12 @@ def index(request):
 
         news2["하락"] = news2["title"].map(lambda x: 1 if x.find("하락") > 0 else 0)
         news2["상승"] = news2["title"].map(lambda x: 1 if x.find("상승") > 0 else 0)
-        news2.loc[(news2["하락"] == 1) & (news2["분류"] != "positive"), "분류"] = "negative"
-        news2.loc[(news2["상승"] == 1) & (news2["분류"] != "negative"), "분류"] = "positive"
+        news2.loc[(news2["하락"] == 1) & (news2["분류"] != "positive"), "분류"] = (
+            "negative"
+        )
+        news2.loc[(news2["상승"] == 1) & (news2["분류"] != "negative"), "분류"] = (
+            "positive"
+        )
 
         news2_counts = news2["분류"].value_counts()
         ratio = news2_counts.loc[["neutral", "positive", "negative"]].values
@@ -366,7 +392,9 @@ def index(request):
         last_price = btc_df["close"].iloc[-1]  # 최신 가격
 
         # 빨간색 점선 가로선 추가
-        latest_price_line = [last_price] * len(btc_df)  # 모든 행에 동일한 최신 가격 추가
+        latest_price_line = [last_price] * len(
+            btc_df
+        )  # 모든 행에 동일한 최신 가격 추가
         addplot = [
             mpf.make_addplot(
                 latest_price_line, color="red", linestyle="dashed", alpha=0.5
@@ -432,7 +460,6 @@ def index(request):
         coins = upbit2()
         cache.set("coins_cache", coins, 10)
 
-
     context = {
         "graph": graph,  # 실시간 비트코인시세 그래프
         "coins": coins,  # 실시간 코인시세
@@ -447,7 +474,7 @@ def portfolio(request):
     # 기본값 설정
     default_start = "2024-01-01"  # 시작 날짜 기본값
     default_end = date.today().isoformat()  # 종료날짜 기본값
-    default_tick = ["SPY", "GLD", "TLT"]  # 기본 종목
+    default_tick = ["GLD", "SPY", "TLT"]  # 기본 종목
     default_btc = ["BTC-USD"]  # 기본 BTC 심볼
     default_price = 5000000
     default_weight = [0.25, 0.25, 0.25, 0.25]
@@ -471,6 +498,7 @@ def portfolio(request):
     btc = [b.strip() for b in btc_raw.split(",")] if btc_raw else default_btc
 
     # 쉼표로 구분된 weight 값
+    error_message = None
     weight_raw = request.POST.get("weight", "")
     try:
         # 리스트로 변환환
@@ -480,8 +508,10 @@ def portfolio(request):
             else default_weight
         )
         if sum(weight) != 1:
+            error_message = "합이 1이 아닙니다. 기본 가중치를 사용합니다."
             weight = default_weight
     except (ValueError, TypeError):
+        error_message = "유효하지 않은 입력입니다. 기본 가중치를 사용합니다."
         weight = default_weight
 
     # 가공된 데이터 구조 생성
@@ -581,7 +611,8 @@ def portfolio(request):
         if key in btc:
             # 암호화폐는 소수점 이하 단위까지 계산
             user_buy = (change_price * value) / last_price[key]
-            user_allocation[key] = f"{user_buy:.2f}"
+            btc_value_in_dollars = user_buy * last_price[key]
+            user_allocation[key] = round(btc_value_in_dollars, 2)
             # 사용한 금액만큼 잔액 차감
             user_leftover -= user_buy * last_price[key]
         else:
@@ -622,7 +653,8 @@ def portfolio(request):
         if key in btc:
             # 암호화폐는 소수점 이하 단위까지 계산
             btc_buy = (change_price * value) / last_price[key]
-            allocation[key] = f"{btc_buy:.2f}"  # 소수점 포함
+            btc_value_in_dollars = btc_buy * last_price[key]
+            allocation[key] = round(btc_value_in_dollars, 2)  # 소수점 포함
             # 사용한 금액만큼 잔액 차감
             leftover -= btc_buy * last_price[key]
         else:
@@ -690,24 +722,24 @@ def portfolio(request):
         yaxis2=dict(title="Price (Stocks)", overlaying="y", side="right"),  # 오른쪽 y축
     )
 
-    # pie 그래프
-    pie_fig = make_subplots(
-        rows=1,
-        cols=2,
-        specs=[[{"type": "domain"}, {"type": "domain"}]],
-        subplot_titles=("사용자 설정 자산 비중", "고정된 자산 비중"),
-    )
+    # # pie 그래프
+    # pie_fig = make_subplots(
+    #     rows=1,
+    #     cols=2,
+    #     specs=[[{"type": "domain"}, {"type": "domain"}]],
+    #     subplot_titles=("사용자 설정 자산 비중", "고정된 자산 비중"),
+    # )
 
-    pie_fig.add_traces(
-        go.Pie(labels=list(user_weight.keys()), values=list(user_weight.values())),
-        rows=1,
-        cols=1,
-    )
-    pie_fig.add_traces(
-        go.Pie(labels=list(weight_dict.keys()), values=list(weight_dict.values())),
-        rows=1,
-        cols=2,
-    )
+    # pie_fig.add_traces(
+    #     go.Pie(labels=list(user_weight.keys()), values=list(user_weight.values())),
+    #     rows=1,
+    #     cols=1,
+    # )
+    # pie_fig.add_traces(
+    #     go.Pie(labels=list(weight_dict.keys()), values=list(weight_dict.values())),
+    #     rows=1,
+    #     cols=2,
+    # )
 
     # bar 그래프
     bar_fig = make_subplots()
@@ -734,7 +766,7 @@ def portfolio(request):
     ]
 
     bar_fig.add_trace(go.Bar(x=col, y=user_y, name="사용자 포트폴리오"))
-    bar_fig.add_trace(go.Bar(x=col, y=optim_y, name="고정된된 포트폴리오"))
+    bar_fig.add_trace(go.Bar(x=col, y=optim_y, name="고정된 포트폴리오"))
 
     bar_fig.update_layout(title_text="포트폴리오 성과 비교", title_x=0.5)
 
@@ -753,8 +785,8 @@ def portfolio(request):
             "연간 변동성": f"{user_port[1]:.2f}",  # 연간 변동성
             "샤프 비율": f"{user_port[2]:.2f}",  # 샤프비율
             "누적 수익률": round(cumulative_returns.iloc[-1], 2),  # 누적 수익률
-            "최대 낙폭(MDD)": round(user_mdd, 2),
         },
+        "user_mdd": round(user_mdd, 2),
         # 고정된 포트폴리오
         "optimized_weights": weight_dict,  # 자산 비중
         "Discrete_allocation": allocation,  # 각 항목 별 개별 할당
@@ -764,8 +796,8 @@ def portfolio(request):
             "연간 변동성": f"{port[1]:.2f}",  # 연간 변동성
             "샤프 비율": f"{port[2]:.2f}",  # 샤프비율
             "누적 수익률": round(fix_cumulative_returns.iloc[-1], 2),  # 누적 수익률
-            "최대 낙폭(MDD)": round(fixed_mdd, 2),
         },
+        "fix_mdd": round(fixed_mdd, 2),
         # "mdd_mean": mdd_mean,  # MDD
         "exchange_rate": exchange_rate,  # 환율
         # 시각화 코드
@@ -777,6 +809,8 @@ def portfolio(request):
         "default_tick": ",".join(tick),  # 입력한 종목 유지
         "default_btc": ",".join(btc),  # 입력한 BTC 종목 유지
         "default_price": price,  # 입력한 초기자금 유지
+        # "default_weight": ",".join(map(str(weight))),
+        "error_message": error_message,
     }
     return render(request, "portfolio.html", context)
 
@@ -799,7 +833,7 @@ def corr(request):
 
     # 전체기간 상관관계 heatmap
     full_corr_fig = px.imshow(
-        df.corr(numeric_only=True),
+        df_mean.corr(numeric_only=True, method="spearman"),
         text_auto=".2",
         aspect="auto",
         color_continuous_scale="PuBU",
@@ -812,13 +846,13 @@ def corr(request):
     halving = [df1, df2, df3, df4]
 
     for i, df_corr in enumerate(halving, start=1):
-        corr = df_corr.corr(numeric_only=True)["btc"]
-        df_halving[f"{i}차 반감기기"] = corr
+        corr = df_corr.corr(numeric_only=True, method="spearman")["btc"]
+        df_halving[f"{i}차 반감기"] = corr
 
     # 주식시장 그래프
     stock_fig = make_subplots(rows=2, cols=1)
-    stock_fig.update_layout(width = 1000, height = 400)
-    
+    stock_fig.update_layout(width=1000, height=400)
+
     # line 그래프프
     for i in df_scaled[["btc", "w5000", "buffet"]]:
         stock_fig.add_trace(
@@ -838,7 +872,7 @@ def corr(request):
 
     # 경제 성장 그래프(gdp, 경제성장률)
     economy_fig = make_subplots(rows=2, cols=1)
-    economy_fig.update_layout(width = 1000, height = 400)
+    economy_fig.update_layout(width=1000, height=400)
 
     # line 그래프
     for i in df_scaled[["btc", "gdp", "경제성장률(USD)"]]:
@@ -859,7 +893,7 @@ def corr(request):
 
     # 물가 그래프
     price_fig = make_subplots(rows=2, cols=1)
-    price_fig.update_layout(width = 1000, height = 400)
+    price_fig.update_layout(width=1000, height=400)
 
     # line 그래프프
     for i in df_scaled[
@@ -889,7 +923,7 @@ def corr(request):
 
     # 통화 정책 그래프
     monetary_fig = make_subplots(rows=2, cols=1)
-    monetary_fig.update_layout(width = 1000, height = 400)
+    monetary_fig.update_layout(width=1000, height=400)
 
     for i in df_scaled[["btc", "기준금리(USD)", "통화량(USD)", "환율"]]:
         monetary_fig.add_trace(
@@ -910,7 +944,7 @@ def corr(request):
 
     # 안전 자산 그래프
     asset_fig = make_subplots(rows=2, cols=1)
-    asset_fig.update_layout(width = 1000, height = 400)
+    asset_fig.update_layout(width=1000, height=400)
     for i in df_scaled[["btc", "금가격", "채권(USD)"]]:
         asset_fig.add_trace(
             go.Scatter(x=df_scaled.index, y=df_scaled[i], name=f"{i}"), row=1, col=1
