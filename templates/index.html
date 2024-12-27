@@ -65,6 +65,38 @@
         }
     }
 
+    
+    #coin_logo2 {
+      position: absolute;
+      transform: translateY(0) scale(1);
+      transition: opacity 0.5s ease;
+    }
+
+    #coin_logo2:hover {
+        animation: bounce 0.6s ease infinite;
+    }
+
+    #coin_logo3 {
+      width: 40px;
+      transform: rotateY(180deg);
+      animation: move 10s ease infinite;
+    }
+
+    @keyframes move{
+      0%{
+        left: 0;
+      }
+      50%{
+        transform: rotateY(360deg);
+        left:1800px;
+      }
+      100%{
+        transform: rotateY(180deg);
+        left:0;
+      }
+    }
+
+
   </style>
 </head>
 
@@ -72,11 +104,11 @@
   <div class="hero_area" style="height: 100%;">
     <!-- header section strats -->
     <header class="header_section">
-      <div class="container-fluid" style="background-color: #6495ED;">
+      <div class="container-fluid" style="background-color: #6495ED;"  style="position: relative;">
         <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
           <a class="navbar-brand" href="{% url 'test:index' %}">
             <div class="img-box">
-              <img src="/media/images/코돌프.png" width="70px" alt="">
+              <img id="coin_logo2" src="/media/images/코돌프.png" width="70px" alt="">
             </div>
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,8 +134,8 @@
                   <a class="nav-link" href="{% url 'test:contact' %}">Prediction</a>
                 </li>
               </ul>
-
             </div>
+            <img id="coin_logo3" src="/media/images/코돌프.png" width="70px" alt="" style="position: absolute; bottom: -320px;">
           </div>
         </nav>
       </div>
