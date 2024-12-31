@@ -1,3 +1,4 @@
+# pip install -r requirements.txt
 from django.shortcuts import render
 import yfinance as yf
 import pandas as pd
@@ -534,9 +535,9 @@ def portfolio(request):
 
         # 데이터 가져오기
         try:
-            usd = yf.download(tick, start=start, end=end, progress=False)["Adj Close"]
+            usd = yf.download(tick, start=start, end=end, progress=False)["Close"]
             btc_data = yf.download(btc, start=start, end=end, progress=False)[
-                "Adj Close"
+                "Close"
             ]
 
             # 데이터 병합
@@ -556,11 +557,11 @@ def portfolio(request):
             return JsonResponse({"error": str(e)}, status=400)
 
         default_usd = yf.download(default_tick, start=start, end=end, progress=False)[
-            "Adj Close"
+            "Close"
         ]
         default_btc_data = yf.download(
             default_btc, start=start, end=end, progress=False
-        )["Adj Close"]
+        )["Close"]
 
         default_df = (
             pd.merge(
@@ -580,7 +581,7 @@ def portfolio(request):
         # ==========================
         # 실시간 환율 가져오기
         exchange_rate_data = yf.download(["USDKRW=X"], period="1d", progress=False)[
-            "Adj Close"
+            "Close"
         ].iloc[-1]
         exchange_rate = round(exchange_rate_data.iloc[0], 2)
 
